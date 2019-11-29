@@ -1,0 +1,17 @@
+﻿{
+"Language": "日本語",
+"orderNoL": "Order No .",
+"cusL": "Customer",
+"deliveryLocL": "Delivery location",
+"productL": "Product",
+"quantityL": "Quantity",
+"unitL": "Unit Price",
+"orderDateL": "Order date",
+"deliveryDateL": "Delivery date",
+"departmentL": "Department",
+"picL": "PIC",
+"customerOrderL": "Customer Order No",
+"productionNoL": "Production No",
+"remarksL": "Remarks",
+
+}

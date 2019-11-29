@@ -4,6 +4,7 @@
 <h2>@ViewBag.Title.</h2>
 <h3>@ViewBag.Message</h3>
 
+
 <address>
     One Microsoft Way<br />
     Redmond, WA 98052-6399<br />
@@ -15,3 +16,28 @@
     <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
     <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
 </address>
+
+<input id="party" type="datetime-local" name="partydate" value="2017-06-01T08:30">
+
+
+<style type="text/css">
+.active { 
+  color: red; 
+  font-weight: bold; 
+}
+</style>
+<div ng-app="myApp2">
+    <input type="text" datepicker-popup ng-model="dateNouki" ng-required="true" />
+</div>
+
+    <div ng-app="myApp2" ng-controller="someController">
+        <span translate>quantityL</span>
+        <button ng-click="switchLanguage('jp')" translate="LANG_DE_DE"></button>
+        <button ng-click="switchLanguage('en')" translate="LANG_EN_US"></button>
+    </div>
+
+<div class="mdl-textfield mdl-js-textfield">
+    <input class="mdl-textfield__input" type="text" id="sample1" width="1000">
+    <label class="mdl-textfield__label" for="sample1">Text...</label>
+</div>
+

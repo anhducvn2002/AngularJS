@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Untitled Document</title>
+</head>
+
+<body>
+	
+<table border="0">
+			<tbody><tr>
+				<td><span translate="" class="ng-scope">得意先</span></td>
+				<td>
+					<span style="width:15pc" class="mdl-textfield mdl-js-textfield is-upgraded" data-upgraded=",MaterialTextfield">
+						<input style="width:15pc" class="mdl-textfield__input ng-pristine ng-valid" type="text" ng-model="tokuiC" ng-keyup="searchTokui(tokuiC, $event)" value="" id="tokuiC" autofocus="">
+						<label class="mdl-textfield__label ng-pristine ng-valid ng-binding" for="tokuiC" ng-model="tokuiCLalbel"></label>
+					</span>
+					<br>
+					<div style="position: absolute;width: 300px;height: 200px;z-index: 15;
+					 top: 17%; left: 19%; margin: -100px 0 0 -150px;" ng-model="tokuiHide" ng-hide="tokuiHide" class="ng-pristine ng-valid ng-hide">
+						<ul style="position:absolute" class="list-group" id="TokuiCList">
+							<!-- ngRepeat: tokuiData in listTokui -->
+						</ul>
+					</div>                                            
+				</td>
+				<td colspan="3">
+						<input style="width:15pc" class="mdl-textfield__input ng-pristine ng-valid" type="text" ng-model="tokuiN" value="得意名称" id="tokuiN" disabled="">                                                
+				</td>
+			</tr>
+			<tr>
+				<td><span translate="" class="ng-scope">納入場所</span></td>
+				<td>
+				  <span style="width:15pc" class="mdl-textfield mdl-js-textfield is-upgraded" data-upgraded=",MaterialTextfield">
+						<input style="width:15pc" class="mdl-textfield__input ng-pristine ng-valid" type="text" ng-keyup="searchNounyu(nounyuC, $event)" ng-model="nounyuC" value="" id="nounyuCID">
+				  <label id="nounyuCList" class="mdl-textfield__label" for="nounyuC"><!--Nounyu Code--></label>
+				  </span>
+
+					
+				</td>
+				<td colspan="3"><input style="width:15pc" class="mdl-textfield__input ng-pristine ng-valid" type="text" ng-model="nounyuN" ng-style="nounyuStyle" value="納入場所" disabled=""></td>
+			</tr>
+			<tr>
+				<td><span translate="" class="ng-scope">製品</span></td>
+				<td>
+					<input type="text" id="sehinCID" ng-model="sehinC" ng-keyup="searchSehin(sehinC)" ng-style="sehinCStyle" value="" class="ng-pristine ng-valid">
+					<span>
+						<ul style="position:absolute;background-color: red" class="list-group ng-pristine ng-valid ng-hide" ng-model="sehinHide" ng-hide="sehinHide">
+							ksjdfskdfldskdlk <br>
+							sjfsklfjsdkfskf <br>
+							ksjdfskdfldskdlk <br>
+							sjfsklfjsdkfskf <br>
+							ksjdfskdfldskdlk <br>
+							sjfsklfjsdkfskf <br>
+							ksjdfskdfldskdlk <br>
+							sjfsklfjsdkfskf <br>
+							ksjdfskdfldskdlk <br>
+							sjfsklfjsdkfskf <br>
+							ksjdfskdfldskdlk <br>
+							sjfsklfjsdkfskf <br>
+							ksjdfskdfldskdlk <br>
+							sjfsklfjsdkfskf <br>
+							ksjdfskdfldskdlk <br>
+							sjfsklfjsdkfskf <br>
+							
+						</ul>
+						</span> 
+
+					<!--
+					<ul style="position:absolute" class="list-group" ng-model="sehinHide" ng-hide="sehinHide">
+						<li class="list-group-item" ng-repeat="sehindata in listSehin" ng-click="getValueSehin(sehindata)">{{sehindata}}</li>
+					</ul>-->
+				</td>
+				<!--<td><input type="text" value={{seiHinCode}} /></td>-->
+				<td>
+					<span><input style="width:10pc" class="mdl-textfield__input ng-pristine ng-valid" type="text" ng-model="sehinZ" value="図番番号" disabled=""></span>
+				</td>
+				<td>
+					<span><input style="width:10pc" class="mdl-textfield__input ng-pristine ng-valid" type="text" ng-model="sehinN" ng-style="sehinNStyle" value="製品名称" disabled=""></span>
+				</td>
+				<td>
+					<input style="width:10pc" class="mdl-textfield__input ng-pristine ng-valid" type="text" ng-model="sehinK" ng-style="sehinKStyle" value="機種" disabled="">
+				</td>
+			</tr>
+		</tbody></table>
+<table>
+	<tbody><tr>
+		<td><span translate="" class="ng-scope">受注数</span></td>
+		<td><div style="width:3pc" class="mdl-textfield mdl-js-textfield is-dirty is-upgraded" data-upgraded=",MaterialTextfield">
+				<span style="background-color: red">
+					<input style="width:3pc" class="mdl-textfield__input ng-pristine ng-valid" type="text" ng-keyup="enterkey($event, 'sehinTID')" ng-model="quantity" value="1" pattern="-?[0-9]*(\.[0-9]+)?" id="quantityID">
+					<label class="mdl-textfield__label" for="quantityID">QTY</label>
+				</span>
+				<span style="width:10pc" class="mdl-textfield__error">not number!</span>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td><span translate="" class="ng-scope">単価</span></td>
+		<td><input type="text" id="sehinTID" ng-keyup="enterkey($event, 'dateNoukiID')" ng-model="sehinT" ng-style="sehinTStyle" value="0" class="ng-pristine ng-valid"></td>
+	</tr>
+	<tr>
+		<td><span translate="" class="ng-scope">受注納期</span></td>
+		<td>
+			<input type="text" id="dateNoukiID" ng-keyup="changedateNouki($event)" ng-model="dateNouki" ng-required="true" ng-style="noukiDateStyle" class="ng-pristine ng-invalid ng-invalid-required" required="required"></td>
+	</tr>
+	<tr>
+		<td><span translate="" class="ng-scope">納入予定</span></td>
+		<td><input type="text" id="dateNounyuID" ng-keyup="changedateNounyu($event)" ng-model="dateNounyu" ng-required="true" ng-style="nounyuDateStyle" class="ng-pristine ng-invalid ng-invalid-required" required="required"></td>
+	</tr>
+</tbody></table>
+	
+	
+	</body>
+</html>

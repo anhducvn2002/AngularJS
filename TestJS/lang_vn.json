@@ -1,0 +1,36 @@
+﻿{
+  "HEADLINE": "Hello da!",
+  "LANG_DE_DE": "Sprache: Deutsch",
+  "LANG_EN_US": "Sprache: Englisch",
+
+  "orderNoL": "Số đơn hàng",
+  "cusL": "Khách Hàng",
+  "deliveryLocL": "Địa chỉ",
+  "productL": "Sản phẩm",
+  "quantityL": "Số lượng",
+  "unitL": "Đơn giá",
+  "orderDateL": "Ngày đặt hàng",
+  "deliveryDateL": "Ngày giao hàng",
+  "departmentL": "Bộ phận",
+  "picL": "Người phụ trách",
+  "customerOrderL": "Số đơn khách hàng",
+  "productionNoL": "Số sản xuất",
+  "remarksL": "Chú ý",
+  "orderL": "Đơn Hàng",
+  "scheduleProdL": "Lịch Sản Xuất",
+  "titleL": "Việt Nam",
+  "ediL": "Lấy Dữ liệu từ DBF",
+  "regL": "Nhập Đơn Hàng",
+  "listL": "Danh sách đơn hàng",
+  "registerJyuucyuu": "Đã đăng ký đơn hàng ",
+  "customerOrderDoube": "Số đơn hàng đã tồn tại.",
+  "confirmTanka": "Đơn giá nhập khác với hệ thống. Bạn có chắc chắn không?",
+  "inputError": " chưa nhập",
+  "editButton": "Sửa",
+  "newButton": "Thêm",
+  "delButton": "Xóa",
+  "nonSelect": "Vui lòng chọn dữ liệu"
+
+
+
+}

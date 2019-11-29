@@ -1,0 +1,36 @@
+{
+  "HEADLINE": "Hello there!",
+  "LANG_DE_DE": "Lang: German",
+  "LANG_EN_US": "Lang: English",
+
+  "orderNoL": "Order No .",
+  "cusL": "Customer",
+  "deliveryLocL": "Delivery location",
+  "productL": "Product",
+  "quantityL": "Quantity",
+  "unitL": "Unit Price",
+  "orderDateL": "Order date",
+  "deliveryDateL": "Delivery date",
+  "departmentL": "Department",
+  "picL": "PIC",
+  "customerOrderL": "Customer Order No",
+  "productionNoL": "Production No",
+  "remarksL": "Remarks",
+  "orderL": "Order Input",
+  "scheduleProdL": "Schedule Input",
+  "titleL": "English",
+  "ediL": "get Data from DBF",
+  "regL": "Register Order",
+  "listL": "Order List",
+  "registerJyuucyuu": "Registered order ",
+  "customerOrderDoube": "Customer Order No. duplicate error.",
+  "confirmTanka": "Input unit price and TW unit price are different. Is it OK?",
+  "inputError": " is not entered",
+  "editButton": "EDIT",
+  "newButton": "NEW",
+  "delButton": "DEL",
+  "nonSelect": "Please select Order Process"
+
+
+
+}

@@ -4,6 +4,12 @@ var jyuucyu = angular.module('myApp2', ['ui.bootstrap', 'pascalprecht.translate'
 var langCollection = [];
 var locationstr = window.location.pathname + "";
 var serverDir = "/" + locationstr.split('/')[1];
+//alert(serverDir);
+//locationstr.split('//')[0].substring(0, locationstr.split('//')[0].length - 1);
+//"/app.dev";
+//alert(window.location.pathname + "@@@" + serverDir);
+
+
 
 jyuucyu.controller("facName", function ($scope, $http, $translate) {
     $scope.FacName = $http({
@@ -26,25 +32,20 @@ jyuucyu.controller("facName", function ($scope, $http, $translate) {
              $translate.use(data);
          });
 
-    $scope.tessss = function () {
-        alert("abccc");
-    }
-
 });
 
 jyuucyu.controller("loadJyucyu", function ($scope, $http, $window, $translate) {
-    $scope.wait_hide = false;
     $scope.langMulti = "";
     $scope.selectedAll = false;
     $scope.selected = false;
 
     $scope.jyuuCyuNo = "";
     $scope.tokuiC = "";
-    $scope.tokuiN = "";
+    $scope.tokuiN = "得意名称";
     $scope.nounyuC = "";
-    $scope.nounyuN = "";
+    $scope.nounyuN = "納入場所";
     $scope.sehinC = "";
-    $scope.sehinZ = "";
+    $scope.sehinZ = "図番番号";
     $scope.sehinN = "製品名称";
     $scope.sehinK = "機種";
     $scope.quantity = "1";
@@ -106,12 +107,12 @@ jyuucyu.controller("loadJyucyu", function ($scope, $http, $window, $translate) {
     //    $scope.dbf_hide = !$scope.dbf_hide;
     //}
 
-    
+    $scope.wait_hide = true;
     $scope.processHide = true;
     $scope.nounyuHide = true;
     $scope.tokuiHide = true;
     $scope.sehinHide = true;
-    $scope.tantouHide = true;
+
 
     //Seisan 
     $scope.kubuns = [
@@ -119,12 +120,15 @@ jyuucyu.controller("loadJyucyu", function ($scope, $http, $window, $translate) {
     { name: '1: 部品', code: '1' },
     ];
     $scope.kubun = $scope.kubuns[0]; //←注目！
-    $scope.wait_hide = true;
 });
 
 jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScroll, $scope, $http, $translate) {    
-    $scope.wait_hide = false;
-    //Enter key event
+
+    
+    
+
+    
+
     $scope.enterkey = function (key, nextID) {
         
         //Enter -> keyCode == 13
@@ -164,79 +168,141 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
                         }
                     }
                 });
-                document.querySelector("#" + nextID).select().focus();
+                document.querySelector("#" + nextID).focus();
             }
-            else if (nextID == 'regLID') {
-                if (!$scope.btnRegDis)
-                    document.querySelector("#regLID").focus();
-                else document.querySelector("#updateLID").focus();
-            }
-            else {
-                if (document.querySelector("#" + nextID).value == "")
-                    document.querySelector("#" + nextID).focus();
-                else document.querySelector("#" + nextID).select().focus();
-            }
-            //a.select().focus();
+            else 
+            document.querySelector("#" + nextID).focus();
+            //a.focus();
         }
         //alert(value.charCode);
     }
 
-    //check abc();
-    
-    $scope.searchSehinChange = function (string) {
-        if (string.length > 2) {
-            $http.get(serverDir + "/About/GetSehin?param=" + string + " - 0")
-            .success(function (data) {
-                $scope.listSehin = data;
-                if ($scope.listSehin.length == 1) {
-                    $scope.sehinC = $scope.listSehin[0].split("  ,  ")[0];
-                    $scope.sehinZ = $scope.listSehin[0].split("  ,  ")[1];
-                    $scope.sehinN = $scope.listSehin[0].split("  ,  ")[2];
-                    $scope.sehinK = $scope.listSehin[0].split("  ,  ")[3];
-                    $scope.sehinT = $scope.listSehin[0].split("  ,  ")[4];
-                    $scope.sehinHide = true;
+    //Get Tokuisaki + Nounyu data
+    $scope.listTokui = []
+    $scope.searchTokui = function (string, b) {
 
-                    document.querySelector("#quantityID").select().focus();
+        //ESC Case
+        /*
+        if (b.keyCode == 27) {
+            $scope.tokuiHide = true;
+            return;
+        }
+        */
+
+        if (b.keyCode == 13) {
+            if ($scope.tokuiC.length == 5) {
+                document.querySelector("#nounyuCID").focus();
+            }
+            //a.focus();
+        }        
+
+        if (string.length > 0) {
+            $http.get(serverDir + "/About/GetTokuiCD?param=" + string)
+            .success(function (data) {
+                $scope.listTokui = data;
+                if ($scope.listTokui.length == 1) {
+
+                    $scope.getTokui($scope.listTokui[0].split("  ,  ")[0]);                    
+                    $scope.tokuiN = $scope.listTokui[0].split("  ,  ")[1];
+                    $scope.tokuiHide = true;
+                    /*
+                    $scope.tokuiC = $scope.listTokui[0].split("  ,  ")[0];                    
+                    $scope.searchNounyu($scope.tokuiC, null);
+                    */
                 }
-                if ($scope.listSehin.length > 1) {
-                    $scope.sehinHide = false;
+                if ($scope.listTokui.length > 1) {
+                    $scope.tokuiHide = false;
                 }
             });
         }
-        if (string.length == 0) {
-            $scope.sehinHide = true;
-        }
-    };
-
-    //Leave Input event  
-   
-    
-
-    $scope.tessss = function () { alert('tessss') };
-    
-    //******************************************************************
-    //TOKCD NAME SEARCH
-    //Get Tokuisaki + Nounyu data
-    $scope.listTokui = [];
-    $scope.listNounyu = [];
+    }
     $scope.getTokui = function (string) {
         $scope.tokuiC = string.split("  ,  ")[0];
         $scope.tokuiN = string.split("  ,  ")[1];
         $scope.tokuiHide = true;
 
         //NounyuCode + Name
-        
+        $scope.listNounyu = [];
         $http.get(serverDir + "/About/GetNouNyu?param=" + $scope.tokuiC)
+           .success(function (data) {
+               $scope.listNounyu = data;
+                   
+               var a = $scope.listNounyu.length;
+
+               if ($scope.listNounyu.length == 1) {
+                   $scope.nounyuStyle = {
+                       "color": "black"
+                   }
+                   $scope.nounyuC = $scope.listNounyu[0].split("  ,  ")[0];
+                   $scope.nounyuN = $scope.listNounyu[0].split("  ,  ")[1];
+                   $scope.nounyuHide = true;
+
+                   document.querySelector("#sehinCID").focus();
+               }
+
+               else if ($scope.listNounyu.length > 1) {
+                   $scope.nounyuC = "";
+                   $scope.nounyuN = "";
+                   $scope.nounyuHide = false;
+                   document.querySelector("#nounyuCID").focus();
+                   return;
+               }
+               else {
+                   alert('納入場所は存在しません。');
+
+                   $scope.nounyuStyle = {
+                       "color": "red"
+                   }
+                   $scope.nounyuC = "";
+                   $scope.nounyuN = "納入場所は存在しません。";
+
+                   $scope.nounyuHide = true;
+                   document.querySelector("#nounyuCID").focus();
+               }
+
+           });
+    }
+
+    //Nounyu data
+    $scope.searchNounyu = function (string, b) {
+
+        //alert(string + b.keyCode);
+
+        if (b != null && b != "") {
+            if (b.keyCode == 27) {
+                $scope.nounyuHide = true;
+                return;
+            }
+
+            if (b.keyCode == 13) {
+                var a = document.querySelector("#sehinCID");
+                a.focus();
+                return;
+            }
+        }
+
+        if (string.length > 0) {
+            $http.get(serverDir + "/About/GetNouNyu?param=" + string + " - " + $scope.tokuiC)
             .success(function (data) {
                 $scope.listNounyu = data;
+                if ($scope.listNounyu.length == 1) {
+                    $scope.nounyuStyle = {
+                        "color": "black"
+                    }
+                    $scope.nounyuC = $scope.listNounyu[0].split("  ,  ")[0];
+                    $scope.nounyuN = $scope.listNounyu[0].split("  ,  ")[1];
+                    $scope.nounyuHide = true;
 
-                var a = $scope.listNounyu.length;                
+                    document.querySelector("#sehinCID").focus();
+                }
 
-                if ($scope.listNounyu.length > 0) {
+                else if ($scope.listNounyu.length > 1) {
                     $scope.nounyuC = "";
                     $scope.nounyuN = "";
+
+                    document.querySelector("#nounyuCID").focus();
+
                     $scope.nounyuHide = false;
-                    document.querySelector("#nounyuNID").focus();
                     return;
                 }
                 else {
@@ -249,292 +315,11 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
                     $scope.nounyuN = "納入場所は存在しません。";
 
                     $scope.nounyuHide = true;
-                    document.querySelector("#tokuiNID").select().focus();
-                }
-
-            });
-    }
-
-    $scope.listFlag = false;
-
-    //INPUT
-    //ng-keyup
-    $scope.searchTokui = function (string, b) {        
-        //ESC -> keyCode = 27
-
-        if (b.keyCode == 27) {
-            $scope.tokuiC = "";
-            $scope.tokuiN = "";
-            $scope.tokuiHide = true;
-            document.querySelector("#sehinZID").select().focus();
-        }
-
-        else if (b.keyCode == 13 || b.keyCode == 38 || b.keyCode == 40) {
-
-            if ($scope.tokuiN == "") {
-                $scope.tokuiC = "";
-                document.querySelector("#sehinZID").focus();
-            }
-            else {
-                if(!$scope.tokuiHide){
-                    document.querySelector("#selectListTokuiID").focus();
-                    $scope.listFlag = true;
-                    if ($scope.listTokui.length == 1) {
-                        $scope.getTokui($scope.listTokui[0].split("  ,  ")[0]);
-                        $scope.tokuiN = $scope.listTokui[0].split("  ,  ")[1];
-                        $scope.listFlag = false;
-                        $scope.tokuiHide = true;
-                        document.querySelector("#nounyuNID").focus();
-                    }
-                }
-                else {
-                    $http({
-                        method: "POST",
-                        url: serverDir + "/Home/checkExistTokuiN/",
-                        data: {
-                            "tokuiN": $scope.tokuiN
-                        },
-                    })
-                   .success(function (result) {
-                       if (result == "False")
-                           document.querySelector("#tokuiNID").focus();
-                       else {
-                           $scope.listFlag = false;
-                           $scope.tokuiHide = true;
-                           document.querySelector("#nounyuNID").focus();
-                       }
-                   });
-                }
-            }
-        }
-
-        else {
-            $scope.tokuiC = "";
-            if (string.length > 0) {
-            $http.get(serverDir + "/About/GetTokuiCD?param=" + string)
-            .success(function (data) {
-                $scope.listTokui = data;
-                if ($scope.listTokui.length > 0) {
-                    $scope.tokuiHide = false;
-                }
-                else {
-                    $scope.listFlag = false;
-                    $scope.tokuiC = "";
-                    $scope.tokuiHide = true;
-                }
-            });
-        }
-            if (string.length == 0) {
-                $scope.tokuiC = "";
-                $scope.tokuiHide = true;
-            }
-        }
-    }
-        
-    //ng-change
-    $scope.searchTokuiChange = function (string) {
-        $scope.tokuiC = "";
-        if (string.length > 0) {
-            $http.get(serverDir + "/About/GetTokuiCD?param=" + string)
-            .success(function (data) {
-                $scope.listTokui = data;                
-                if ($scope.listTokui.length > 0) {
-                    $scope.tokuiHide = false;
-                } else {
-                    $scope.tokuiC = "";
-                    $scope.tokuiHide = true;
-                    $scope.listFlag = false;
-                }
-            });
-        }
-        if (string.length == 0) {
-            $scope.tokuiC = "";
-            $scope.tokuiHide = true;
-        }
-    };
-
-    //ng-blur
-    $scope.leaveInput = function (key, eventCode) {        
-        if (key == "TOKCD") {
-            if ($scope.tokuiN == "") {
-                $scope.tokuiC = "";
-                return;
-            }            
-            $http({
-                method: "POST",
-                url: serverDir + "/Home/checkExistTokuiN/",
-                data: {
-                    "tokuiN": $scope.tokuiN
-                },
-            })
-            .success(function (result) {
-                if (result == "False") {
-                    if (!$scope.tokuiHide) document.querySelector("#selectListTokuiID").focus();
-                    else document.querySelector("#tokuiNID").focus();
-                }
-                else
-                    $scope.tokuiHide = true;
-            });
-            
-            //else document.querySelector("#tokuiNID").focus();
-        }
-        if (key == "NOUCD"){
-            if ($scope.nounyuN == "") {
-                if (!$scope.nounyuHide) {
-                    document.querySelector("#selectListNounyuID").focus();
-                    return;
-                }
-                else {
-                    $scope.nounyuC = "";
-                    $scope.nounyuHide = true;
-                    return;
-                }
-            }            
-            $http({
-                method: "POST",
-                url: serverDir + "/Home/checkExistNounyuN/",
-                data: {
-                    "nounyuN": $scope.nounyuN,
-                    "tokuiC":$scope.tokuiC
-                },
-            })
-            .success(function (result) {
-                if (result == "False") {
-                    if (!$scope.nounyuHide) document.querySelector("#selectListNounyuID").focus();
-                    else document.querySelector("#nounyuNID").focus();
-                }
-                else
-                    $scope.nounyuHide = true;
-            });
-        }
-        if (key == "ZAICD") {
-            if ($scope.sehinZ == "") {
-                $scope.sehinC = "";
-                //$scope.sehinZ = "";
-                $scope.sehinN = "";
-                $scope.sehinK = "";
-                $scope.sehinT = "";
-                return;
-            }
-
-            $http({
-                method: "POST",
-                url: serverDir + "/Home/checkExistZaiCD/",
-                data: {
-                    "zaicd": $scope.sehinC,
-                    "kubun": "0"
-                },
-            })
-            .success(function (result) {
-                if (result == "False")
-                    if (!$scope.sehinHide)
-                        document.querySelector("#selectListSeihinID").focus();
-                    else
-                        document.querySelector("#sehinZID").focus();
-                else {
-                    //$scope.listFlag = false;
-                    $scope.sehinHide = true;
-                    //document.querySelector("#seisu" + $scope.seiProcess.SIYNO + "ID").select().focus();
-                }
-            });
-        }
-        if (key == "TANCD") {
-            if ($scope.tantouC == "") {
-                $scope.tantouN == ""
-                return;
-            }
-
-            $http({
-                method: "POST",
-                url: serverDir + "/Home/checkExistTantouCD/",
-                data: {
-                    "tantouCD": $scope.tantouC
-                },
-            })
-            .success(function (result) {
-                if (result == "False")
-                    if (!$scope.tantouHide) document.querySelector("#selectListTantouID").focus();
-                    else document.querySelector("#tantouCID").focus();
-                else {
-                    //$scope.listFlag = false;
-                    $scope.tantouHide = true;
-                    //document.querySelector("#seizouID").select().focus();
+                    document.querySelector("#nounyuCID").focus();
                 }
             });
         }
     }
-
-    //LIST SEHIN
-    //ng-keyup List
-    $scope.listKeyUp = function (inputID, key) {
-
-        //ESC -> keyCode = 27
-        if (key.keyCode == 27) {
-            if (inputID == 'TOKCD') {
-                $scope.tokuiC = "";
-                $scope.tokuiN = "";
-                $scope.tokuiHide = true;
-                document.querySelector("#sehinZID").focus();
-            }
-            if (inputID == 'NOUCD') {
-                $scope.nounyuC = "";
-                $scope.nounyuN = "";
-                $scope.nounyuHide = true;
-                document.querySelector("#sehinZID").focus();
-            }
-            if (inputID == 'ZAICD') {
-                $scope.sehinC = "";
-                $scope.sehinZ = "";
-                $scope.sehinN = "";
-                $scope.sehinK = "";
-                $scope.sehinT = "";
-                $scope.sehinHide = true;
-                document.querySelector("#quantityID").select().focus();
-            }
-            if (inputID == 'TANCD') {
-                $scope.tantouC = "";
-                $scope.tantouN = "";
-                $scope.sehinHide = true;
-                document.querySelector("#cyumonNo1ID").select().focus();
-            }
-        }
-
-        // ENTER: key == 13 => select
-        if (key.keyCode == 13) {
-            if (inputID == 'TOKCD')
-                $scope.getTokui($scope.selectedTokui);
-            if (inputID == 'NOUCD')
-                $scope.getNounyu($scope.selectedNounyu);
-            if (inputID == 'ZAICD')
-                $scope.getValueSehin($scope.selectedSeihin);
-            if (inputID == 'TANCD')
-                $scope.getValueTantou($scope.selectedTantou);
-        }
-    }
-    
-    //ng-blur List
-    $scope.listBlur = function (inputID) {
-        if (inputID == "TOKCD") {
-            if (!$scope.tokuiHide)
-                document.querySelector("#tokuiNID").focus();
-        }
-        
-        if (inputID == "NOUCD") {
-            if (!$scope.nounyuHide)
-                document.querySelector("#nounyuNID").focus();
-        }
-        if (inputID == "ZAICD") {
-            if (!$scope.sehinHide)
-                document.querySelector("#sehinZID").focus();
-        }
-        if (inputID == "TANCD") {
-            if (!$scope.tantouHide)
-                document.querySelector("#tantouCID").focus();
-        }
-    };
-
-    //******************************************************************
-    //NOUNYU SEARCH
     $scope.getNounyu = function (string) {
         $scope.nounyuStyle = {
             "color": "black"
@@ -543,165 +328,32 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
         $scope.nounyuN = string.split("  ,  ")[1];
         $scope.nounyuHide = true;
 
-        document.querySelector("#sehinZID").select().focus();
+        document.querySelector("#sehinCID").focus();
     }
 
-    //INPUT
-    //ng-keyup
-    //Nounyu data
-    $scope.searchNounyu = function (string, b) {
-        //ESC -> keyCode = 27
-
-        if (b.keyCode == 27) {
-
-
-
-            $scope.nounyuC = "";
-            $scope.nounyuN = "";
-
-            $http.get(serverDir + "/About/GetNouNyu?param=" + $scope.nounyuN + " - " + $scope.tokuiC)
-                .success(function (data) {
-                    $scope.listNounyu = data;
-
-                    var a = $scope.listNounyu.length;
-
-                    if ($scope.listNounyu.length > 0) {
-                        $scope.nounyuHide = false;
-                    }
-
-
-                    else {
-                        $scope.listFlag = false;
-                        $scope.nounyuHide = true;
-                    }
-
-                });
-
-            //$scope.nounyuHide = true;
-            document.querySelector("#nounyuNID").select().focus();
-        }
-
-        else if (b.keyCode == 13 || b.keyCode == 38 || b.keyCode == 40) {
-
-            if ($scope.nounyuN == "" || $scope.nounyuN == null) {
-                if (!$scope.nounyuHide)
-                    document.querySelector("#selectListNounyuID").focus();
-                else document.querySelector("#sehinZID").focus();
-            }
-            else {
-                if (!$scope.nounyuHide) {
-                    document.querySelector("#selectListNounyuID").focus();
-                    $scope.listFlag = true;
-                    if ($scope.listNounyu.length == 1) {
-                        $scope.nounyuC = ($scope.listNounyu[0].split("  ,  ")[0]);
-                        $scope.nounyuN = $scope.listNounyu[0].split("  ,  ")[1];
-                        $scope.listFlag = false;
-                        $scope.nounyuHide = true;
-                        document.querySelector("#sehinZID").focus();
-                    }
-                }
-                else {
-
-                    if ($scope.tokuiC == null || $scope.tokuiC == "") {
-                        document.querySelector("#nounyuN").focus();
-                    }
-                    else {
-                        $http({
-                            method: "POST",
-                            url: serverDir + "/Home/checkExistNounyuN/",
-                            data: {
-                                "nounyuN": $scope.nounyuN,
-                                "tokuiC": $scope.tokuiC
-                            },
-                        })
-                       .success(function (result) {
-                           if (result == "False")
-                               document.querySelector("#nounyuN").focus();
-                           else {
-                               $scope.listFlag = false;
-                               $scope.tokuiHide = true;
-                               document.querySelector("#sehinZID").focus();
-                           }
-                       });
-                    }
-                }
-            }
-        }
-
-        else {
-            $scope.nounyuC = "";
-            if ($scope.tokuiC == null || $scope.tokuiC == "") {
-                document.querySelector("#tokuiNID").focus();
-                alert('Pls input tokui first');
-            }
-            else {
-                $http.get(serverDir + "/About/GetNouNyu?param=" + string + " - " + $scope.tokuiC)
-                .success(function (data) {
-                    $scope.listNounyu = data;
-
-                    var a = $scope.listNounyu.length;
-
-                    if ($scope.listNounyu.length > 0) {
-                        $scope.nounyuHide = false;
-                    }
-
-
-                    else {
-                        $scope.listFlag = false;
-                        $scope.nounyuHide = true;
-                    }
-
-                });
-            }
-        }
-    }
-
-    //ng-change
-    $scope.searchNoynyuChange = function (string) {
-        $scope.nounyuC = "";
-        if (string.length > 0) {
-            //check TOKCD
-            if ($scope.tokuiC == null || $scope.tokuiC == "") {
-                document.querySelector("#tokuiNID").focus();
-                alert('Pls input tokui first');
-            }
-            else {
-                $http.get(serverDir + "/About/GetNouNyu?param=" + string + " - " + $scope.tokuiC)
-                .success(function (data) {
-                    $scope.listNounyu = data;
-
-                    var a = $scope.listNounyu.length;
-
-                    if ($scope.listNounyu.length > 0) {
-                        $scope.nounyuHide = false;
-                    }
-
-
-                    else {
-                        $scope.listFlag = false;
-                        $scope.nounyuHide = true;
-                    }
-
-                });
-            }
-        }
-        else {
-            $scope.nounyuC = "";
-            $scope.nounyuHide = true;
-        }
-    };
-
-    //ng-blur
-    //$scope.leaveInput 
-    //****LIST NOUNYU****
-    //ng-keyup List
-    //$scope.listKeyUp
-    //ng-blur List
-    
-    //******************************************************************
-    //SEHIN SEARCH
     //Get sehin data
     $scope.listSehin = [];
+    $scope.searchSehin = function (string) {
+        if (string.length > 2) {
+            $http.get(serverDir + "/About/GetSehin?param=" + string + " - 0")
+            .success(function (data) {
+                $scope.listSehin = data;
+                if ($scope.listSehin.length == 1) {
+                    $scope.sehinC = $scope.listSehin[0].split("  ,  ")[0];
+                    $scope.sehinZ = $scope.listSehin[0].split("  ,  ")[1];
+                    $scope.sehinN = $scope.listSehin[0].split("  ,  ")[2];
+                    $scope.sehinK = $scope.listSehin[0].split("  ,  ")[3];
+                    $scope.sehinT = $scope.listSehin[0].split("  ,  ")[4];
+                    $scope.sehinHide = true;
+
+                    document.querySelector("#quantityID").focus();
+                }
+                if ($scope.listSehin.length > 1) {
+                    $scope.sehinHide = false;
+                }
+            });
+        }
+    }
     $scope.getValueSehin = function (string) {
         $scope.sehinC = string.split("  ,  ")[0];
         $scope.sehinZ = string.split("  ,  ")[1];
@@ -711,248 +363,11 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
         $scope.sehinHide = true;
 
         $scope.nounyuHide = true;
-        document.querySelector("#quantityID").select().focus();
+        document.querySelector("#quantityID").focus();
     }
 
-    $scope.searchSehin = function (string, b) {
-        //ESC -> keyCode = 27
 
-        if (b.keyCode == 27) {
-            $scope.sehinC = "";
-            $scope.sehinZ = "";
-            $scope.sehinN = "";
-            $scope.sehinK = "";
-            $scope.sehinT = "";
-            $scope.sehinHide = true;
-            document.querySelector("#quantityID").focus();
-            return;
-        }
-
-        if (b.keyCode == 13 || b.keyCode == 38 || b.keyCode == 40) {
-
-            if (string == "") {
-                document.querySelector("#quantityID").focus();
-            }
-            else {
-                if (!$scope.sehinHide) {
-                    document.querySelector("#selectListSeihinID").focus();
-                    $scope.listFlag = true;
-                    if ($scope.listSehin.length == 1) {
-                        $scope.sehinC = $scope.listSehin[0].split("  ,  ")[0];
-                        $scope.sehinZ = $scope.listSehin[0].split("  ,  ")[1];
-                        $scope.sehinN = $scope.listSehin[0].split("  ,  ")[2];
-                        $scope.sehinK = $scope.listSehin[0].split("  ,  ")[3];
-                        $scope.sehinT = $scope.listSehin[0].split("  ,  ")[4];
-                        $scope.sehinHide = true;
-                        document.querySelector("#quantityID").select().focus();
-                    }
-                }
-                else {
-                    $http({
-                        method: "POST",
-                        url: serverDir + "/Home/checkExistZaiCD/",
-                        data: {
-                            "zaicd": $scope.sehinC,
-                            "kubun": "0"
-                        },
-                    })
-                    .success(function (result) {
-                        if (result == "False")
-                            document.querySelector("#sehinZID").focus();
-                        else {
-                            $scope.listFlag = false;
-                            $scope.sehinHide = true;
-                            document.querySelector("#quantityID").select().focus();
-                        }
-                    });
-                }
-            }
-        }
-
-        if (string.length > 2) {
-            $scope.sehinC = "";
-            //$scope.sehinZ = "";
-            $scope.sehinN = "";
-            $scope.sehinK = "";
-            $scope.sehinT = "";
-            $http.get(serverDir + "/About/GetSehin?param=" + string + " - 0")
-            .success(function (data) {
-                $scope.listSehin = data;
-                if ($scope.listSehin.length > 0) {
-                    $scope.sehinHide = false;
-                }
-                else {
-                    $scope.listFlag = false;
-                    $scope.sehinHide = true;
-                }
-            });
-        }
-        else if (string.length <= 2 && string.length > 0) {
-            $scope.sehinC = "";
-            //$scope.sehinZ = "";
-            $scope.sehinN = "";
-            $scope.sehinK = "";
-            $scope.sehinT = "";
-            $scope.sehinHide = true;
-        }
-        else {
-            $scope.sehinC = "";
-            //$scope.sehinZ = "";
-            $scope.sehinN = "";
-            $scope.sehinK = "";
-            $scope.sehinT = "";
-        }
-    }
-    $scope.searchSehinChange = function (string) {
-        $scope.sehinC = "";
-        //$scope.sehinZ = "";
-        $scope.sehinN = "";
-        $scope.sehinK = "";
-        $scope.sehinT = "";
-        if (string.length > 2) {
-            $http.get(serverDir + "/About/GetSehin?param=" + string + " - 0")
-            .success(function (data) {
-                $scope.listSehin = data;
-                if ($scope.listSehin.length > 0) {
-                    $scope.sehinHide = false;
-                }
-                else {
-                    $scope.listFlag = false;
-                    $scope.sehinHide = true;
-                }
-            });
-        }
-        if (string.length == 0) {
-            $scope.sehinC = "";
-            //$scope.sehinZ = "";
-            $scope.sehinN = "";
-            $scope.sehinK = "";
-            $scope.sehinT = "";
-            $scope.sehinHide = true;
-        }
-    };
-
-    //******************************************************************
-    //SEHIN TANTOU
-    //Get Tantou data
-    $scope.listTantou = [];
-    $scope.getValueTantou = function (string) {
-        $scope.tantouC = string.split("  ,  ")[0];
-        $scope.tantouN = string.split("  ,  ")[1];
-        $scope.tantouHide = true;
-        document.querySelector("#cyumonNo1ID").select().focus();
-    }
-
-    $scope.searchTantou = function (string, b) {
-        //ESC -> keyCode = 27
-
-        if (b.keyCode == 27) {
-            $scope.tantouC = "";
-            $scope.tantouN = "";
-            $scope.tantouHide = true;
-            document.querySelector("#cyumonNo1ID").focus();
-            return;
-        }
-
-        if (b.keyCode == 13 || b.keyCode == 38 || b.keyCode == 40) {
-
-            if (string == "") {
-                document.querySelector("#cyumonNo1ID").focus();
-            }
-            else {
-                if (!$scope.sehinHide) {
-                    document.querySelector("#selectListTantouID").focus();
-                    $scope.listFlag = true;
-                    if ($scope.listTantou.length == 1) {
-                        $scope.tantouC = $scope.listTantou[0].split("  ,  ")[0];
-                        $scope.tantouN = $scope.listTantou[0].split("  ,  ")[1];
-                        
-                        $scope.tantouHide = true;
-                        document.querySelector("#cyumonNo1ID").select().focus();
-                    }
-                }
-                else {
-                    $http({
-                        method: "POST",
-                        url: serverDir + "/Home/checkExistTantouCD/",
-                        data: {
-                            "tantouCD": $scope.tantouC
-                        },
-                    })
-                    .success(function (result) {
-                        if (result == "False")
-                            document.querySelector("#tantouCID").focus();
-                        else {
-                            $scope.listFlag = false;
-                            $scope.tantouHide = true;
-                            document.querySelector("#seizouID").select().focus();
-                        }
-                    });
-                }
-            }
-        }
-
-        if (string.length > 0) {            
-            $http.get(serverDir + "/About/getTantou?param=" + string)
-            .success(function (data) {
-                $scope.listTantou = data;
-                if ($scope.listTantou.length > 0) {
-                    $scope.tantouHide = false;
-                }
-                else {
-                    $scope.listFlag = false;
-                    $scope.tantouHide = true;
-                }
-            });
-        }        
-        else {
-            $scope.tantouC = "";
-            $scope.tantouN = "";
-        }
-    }
-    $scope.searchTantouChange = function (string) {
-        if (string.length > 0) {
-
-            $http.get(serverDir + "/About/getTantou?param=" + string)
-            .success(function (data) {
-                $scope.listTantou = data;
-                if ($scope.listTantou.length > 0) {
-                    $scope.tantouHide = false;
-                }
-                else {
-                    $scope.listFlag = false;
-                    $scope.tantouHide = true;
-                }
-            });
-        }
-        else {
-            $scope.tantouC = "";
-            $scope.tantouN = "";
-        }
-    };
-
-
-    /*
-    $scope.searchTantou = function (string) {
-        if (string.length > 0) {
-            $http.get(serverDir + "/About/getTantou?param=" + string)
-            .success(function (data) {
-                $scope.listTantou = data;
-                if ($scope.listTantou.length == 1) {
-                    $scope.tantouC = $scope.listTantou[0].split("  ,  ")[0];
-                    $scope.tantouN = $scope.listTantou[0].split("  ,  ")[1];
-                    $scope.tantouHide = true;
-
-                    document.querySelector("#cyumonNo1ID").select().focus();
-                }
-                if ($scope.listTantou.length > 1) {
-                    $scope.tantouHide = false;
-                }
-            });
-        }
-    }
-    */
-
+    
     $scope.changedateNouki = function (key) {
         if (key.keyCode == 13) {
 
@@ -968,16 +383,16 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
                     "dateNounyu":$scope.dateNounyu
                 },
             })
-            .success(function (result) {
-                $scope.validateDATA(result);
-                if (result.indexOf("NG: ") > -1) {
-                    alert(result);
-                }
-                else {
-                    $scope.dateNounyu = result;
-                    document.querySelector("#dateNounyuID").select().focus();
-                }
-            });
+           .success(function (result) {
+               $scope.validateDATA(result);
+               if (result.indexOf("NG: ") > -1) {
+                   alert(result);
+               }
+               else {
+                   $scope.dateNounyu = result;
+                   document.querySelector("#dateNounyuID").focus();
+               }
+           });
         }
     }
     $scope.changedateNounyu = function (key) {
@@ -990,55 +405,95 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
                     "dateNounyu": $scope.dateNounyu
                 },
             })
-            .success(function (result) {
-                $scope.validateDATA(result);
-                if (result.indexOf("NG: ") > -1) {
-                    alert(result);
+           .success(function (result) {
+               $scope.validateDATA(result);
+               if (result.indexOf("NG: ") > -1) {
+                   alert(result);
+               }
+               else {
+                   document.querySelector("#bumonCodeID").focus();
+               }
+           });
+        }
+    }
+
+    //Get Tantou data
+    $scope.listTantou = [];
+    $scope.searchTantou = function (string) {
+
+        if (string.length > 0) {
+            $http.get(serverDir + "/About/getTantou?param=" + string)
+            .success(function (data) {
+                $scope.listTantou = data;
+                if ($scope.listTantou.length == 1) {
+                    $scope.tantouC = $scope.listTantou[0].split("  ,  ")[0];
+                    $scope.tantouN = $scope.listTantou[0].split("  ,  ")[1];
+                    $scope.tantouHide = true;
+
+                    document.querySelector("#cyumonNo1ID").focus();
                 }
-                else {
-                    document.querySelector("#bumonCodeID").select().focus();
+                if ($scope.listTantou.length > 1) {
+                    $scope.tantouHide = false;
                 }
             });
         }
     }
-
+    $scope.getValueTantou = function (string) {
+        $scope.tantouC = string.split("  ,  ")[0];
+        $scope.tantouN = string.split("  ,  ")[1];
+        $scope.tantouHide = true;
+        document.querySelector("#cyumonNo1ID").focus();
+    }
     
 
     //Get Data from DBF File
-    //$scope.listCyumn = [];
+    $scope.listCyumn = [];
     $scope.listJyuProcess = [];
     $scope.JyuuProcess = { jyuuCyuNo: "" };
 
     $scope.filterJyuProcess = [];
     $scope.odbcs = [
-                { name: '0: Microsoft Text Driver (*.txt; *.csv)', code: '0' },
-                { name: '1: Microsoft.Jet.OLEDB.4.0', code: '1' },
+               { name: '0: Microsoft Text Driver (*.txt; *.csv)', code: '0' },
+               { name: '1: Microsoft.Jet.OLEDB.4.0', code: '1' },
                 { name: '2: StreamReader', code: '2' },
                 { name: '3: Microsoft.ACE.OLEDB.12.0', code: '3' },
     ];
     $scope.odbc = $scope.odbcs[2];
 
-    
-    /*
-    $scope.TESTBYDUC2 = function (key) {
-        var a = key;
-        return;
-    
-        var d = key.target.PROCESSING_INSTRUCTION_NODE;
-        var a = key.target;
-        var aaa = a.ENTITY_NODE;
-        var e = key.target.ENTITY_REFERENCE_NODE;
-        var b = a[9].innerText;
-        var c = a.childElementCount;
-    
-        $scope.tantouN = a[d].innerText;
-    }
-    
-    $scope.TESTBYDUC3 = function () {
-        $scope.selectedSehin = $scope.selectedSehin;
-    }
-    */
+    $scope.TESTBYDUC = function () {        
+        $scope.abcTest = [];
 
+
+        $http({
+            method: "POST",
+            url: serverDir +"/Home/TESTBYDUC/",
+            data: {
+                "testV":$scope.odbc.code
+            },
+        })
+         .success(function (param1) {
+             $scope.abcTest = param1;
+             var a = $scope.abcTest;
+             
+         });
+
+        return;
+
+
+        $scope.employees = [
+        { empName: 'vijay', sex: 'M', salary: 10000 },
+        { empName: 'Aruna', sex: 'F', salary: 25000 },
+        { empName: 'Jayaram', sex: 'M', salary: 23000 },
+        { empName: 'john', sex: 'M', salary: 980000 },
+        { empName: 'Rashmi', sex: 'F', salary: 12233 },
+        ];
+        $scope.filterEmployees = $filter('filter')($scope.employees, { empName: '' });
+
+        var a = $scope.filterEmployees.length
+        $scope.orderEmployees = $filter('orderBy')($scope.employees, '-empName');
+        alert("OK");
+    }
+    
     $scope.delJyuProcess = function () {
 
         $http({
@@ -1049,13 +504,13 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
                 "Jyuu": $scope.JyuuProcess
             },
         })
-            .success(function (param1) {
-                //$scope.listJyuProcess = data;
-                $scope.GetJyuProcess();
-                $scope.wait_hide = !$scope.wait_hide;
-                $scope.processHide = false;
-                $scope.ClearAllFill();
-            });
+         .success(function (param1) {
+             //$scope.listJyuProcess = data;
+             $scope.GetJyuProcess();
+             $scope.wait_hide = !$scope.wait_hide;
+             $scope.processHide = false;
+             $scope.ClearAllFill();
+         });
     }    
 
     //SEARCH INPUT VALUES
@@ -1076,12 +531,12 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
                 //"listJyuProcess": $scope.listJyuProcess
             },
         })
-            .success(function () {
-                //$scope.listJyuProcess = data;
-                $scope.GetJyuProcess();
-                $scope.wait_hide = !$scope.wait_hide;
-                $scope.processHide = false;
-            });
+          .success(function () {
+              //$scope.listJyuProcess = data;
+              $scope.GetJyuProcess();
+              $scope.wait_hide = !$scope.wait_hide;
+              $scope.processHide = false;
+          });
     }
 
 
@@ -1148,15 +603,15 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
                 var MM = jyuProcess.Nouki.substring(4, 6);
                 var dd = jyuProcess.Nouki.substring(6, 8);
                 var nouki = new Date(yyyy + "-" + MM + "-" + dd);
-    
+
                 $scope.dateNouki = yyyy + "-" + MM + "-" + dd;
-    
+
                 //Set Date for Nounyu
                 yyyy = jyuProcess.Nounyu.substring(0, 4);
                 MM = jyuProcess.Nounyu.substring(4, 6);
                 dd = jyuProcess.Nounyu.substring(6, 8);
                 var nounyu = new Date(yyyy + "-" + MM + "-" + dd);
-    
+
                 $scope.dateNounyu = yyyy + "-" + MM + "-" + dd;
                 */
 
@@ -1276,16 +731,16 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
                                 "newYuucyu": $scope.this
                             },
                         })
-                        .success(function (data, $translate) {
-                            if ($scope.this.tantouName < 1) {
-                                alert('Empty');
-                            }
-                            else {
-                                $scope.ClearAllFill();
-                                alert(langCollection.registerJyuucyuu + data);
-                                document.querySelector("#tokuiC").focus();
-                            }
-                        });
+                       .success(function (data, $translate) {
+                           if ($scope.this.tantouName < 1) {
+                               alert('Empty');
+                           }
+                           else {
+                               $scope.ClearAllFill();
+                               alert(langCollection.registerJyuucyuu + data);
+                               document.querySelector("#tokuiC").focus();
+                           }
+                       });
                         $scope.wait_hide = true;
                     }
                     else {
@@ -1355,30 +810,30 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
                             "JyuuProcess": $scope.this
                         },
                     })
-                    .success(function (data) {
-                        $scope.listJyuProcess = data;
-                        //$scope.ClearAllFill();
-                        //
-                        $scope.wait_hide = !$scope.wait_hide;
+                   .success(function (data) {
+                       $scope.listJyuProcess = data;
+                       //$scope.ClearAllFill();
+                       //
+                       $scope.wait_hide = !$scope.wait_hide;
 
-                        $("html, body").stop().animate({
-                            scrollTop: $('#jyuReg').offset().top - 40
-                        }, '500', 'linear');
-
-
-                        $location.hash('jyuReg');
-                        $anchorScroll();
+                       $("html, body").stop().animate({
+                           scrollTop: $('#jyuReg').offset().top - 40
+                       }, '500', 'linear');
 
 
-                        $scope.btnRegDis = !$scope.btnRegDis;
-                        $scope.ClearAllFill();
-                    });
+                       $location.hash('jyuReg');
+                       $anchorScroll();
+
+
+                       $scope.btnRegDis = !$scope.btnRegDis;
+                       $scope.ClearAllFill();
+                   });
                 }
 
             });
         }
         else {
-            alert(langCollection.nonSelect);
+            alert("Pls select one of Processing Order");
             $scope.wait_hide = !$scope.wait_hide;
         }
 
@@ -1391,11 +846,11 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
 
         $scope.jyuuCyuNo = "";
         $scope.tokuiC = "";
-        $scope.tokuiN = "";
+        $scope.tokuiN = "得意名称";
         $scope.nounyuC = "";
-        $scope.nounyuN = "";
+        $scope.nounyuN = "納入場所";
         $scope.sehinC = "";
-        $scope.sehinZ = "";
+        $scope.sehinZ = "図番番号";
         $scope.sehinN = "製品名称";
         $scope.sehinK = "機種";
         $scope.quantity = "1";
@@ -1458,7 +913,7 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
         });
 
         if (strcond == "In ('") {
-            alert(langCollection.nonSelect);
+            alert("Pls select ");
             $scope.wait_hide = true;
         }
         else {
@@ -1474,10 +929,10 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
                     "listJyuProcess": strall
                 },
             })
-                .success(function (data) {
-                    $scope.listJyuProcess = data;
-                    $scope.wait_hide = true;
-                });
+              .success(function (data) {
+                  $scope.listJyuProcess = data;
+                  $scope.wait_hide = true;
+              });
         }
     }
 
@@ -1495,7 +950,7 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
             strall = strall + jyu.Jyuucyuno + "','";
         });
 
-        if (strcond == "In ('") alert(langCollection.nonSelect);
+        if (strcond == "In ('") alert("Pls select ");
         else {
             strcond = strcond.substring(0, strcond.length - 2) + ")";
             strall = strall.substring(0, strall.length - 2) + ")";
@@ -1634,11 +1089,13 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
 
         $scope.wait_hide = true;
     }
-    $scope.wait_hide = true;
+
+
 });
 
+
 jyuucyu.controller("seisancontroller", function ($location, $filter, $anchorScroll, $scope, $http, $translate) {
-    $scope.wait_hide = false;
+
     $http.get(serverDir + "/About/getLangSel")
             .success(function (data) {
                 $scope.langMulti = data;
@@ -1676,210 +1133,52 @@ jyuucyu.controller("seisancontroller", function ($location, $filter, $anchorScro
         $scope.tokuiHide = true;
         $scope.createButtonHide = false;        
     }
+
     
     $scope.seiProcess = [];
     $scope.listSeiProcess = [];
 
     //Get sehin data
     $scope.listSehin = [];
-
-    //******************************************************************
-    //SEHIN SEARCH
-
-    $scope.listFlag = false;
-
-    //INPUT
-    //ng-keyup    
-    $scope.searchSehin = function (seiProcess, b) {
+    $scope.searchSehin = function (seiProcess) {
         $scope.seiProcess = seiProcess;
-        //ESC -> keyCode = 27
+        string = seiProcess.ZAICD + " - " + $scope.kubun.code;
+        if (seiProcess.ZAICD > 4) {
+            $http.get(serverDir + "/About/GetSehin?param=" + string)
+            .success(function (data) {
+                $scope.listSehin = data;
+                if ($scope.listSehin.length == 1) {
+                    $scope.seiProcess.ZAICD = $scope.listSehin[0].split("  ,  ")[0];
+                    $scope.seiProcess.ZUBAN = $scope.listSehin[0].split("  ,  ")[1];
+                    $scope.seiProcess.NAME = $scope.listSehin[0].split("  ,  ")[2];
+                    $scope.seiProcess.KISYU = $scope.listSehin[0].split("  ,  ")[3];
+                    $scope.seiProcess.JTANKA = $scope.listSehin[0].split("  ,  ")[4];
+                    $scope.updateSeiProcess($scope.seiProcess);
+                    $scope.sehinHide = true;
+                    document.querySelector("#seisu" + seiProcess.SIYNO + "ID").select().focus();
+                }
+                if ($scope.listSehin.length > 1) {
+                    
+                    $scope.sehinListStyle = {
+                    //"top": "0px",
+                    //"left": "0px",
+                    "color":"red",
+                    //"background-position":"100px 200px",
+                    //"height": "250px",
+                    //"width": "500px",
+                    //"background-color": "red",
 
-        if (b.keyCode == 27) {
-            $scope.seiProcess.ZAICD = "";
-            $scope.seiProcess.ZUBAN = "";
-            $scope.seiProcess.NAME = "";
-            $scope.seiProcess.KISYU = "";
-            $scope.seiProcess.JTANKA = "";
-            $scope.sehinHide = true;
-            document.querySelector("#sehin" + $scope.seiProcess.SIYNO + "ID").focus();
-            return;
-        }
-
-        if (b.keyCode == 13 || b.keyCode == 38 || b.keyCode == 40) {
-
-            if ($scope.seiProcess.ZAICD == "") {
-                document.querySelector("#seisu" + $scope.seiProcess.SIYNO + "ID").select().focus();
-            }
-            else {
-                if (!$scope.sehinHide) {
-                    document.querySelector("#listSehinID").focus();
-                    $scope.listFlag = true;
-                    if ($scope.listSehin.length == 1) {
-                        $scope.seiProcess.ZAICD = $scope.listSehin[0].split("  ,  ")[0];
-                        $scope.seiProcess.ZUBAN = $scope.listSehin[0].split("  ,  ")[1];
-                        $scope.seiProcess.NAME = $scope.listSehin[0].split("  ,  ")[2];
-                        $scope.seiProcess.KISYU = $scope.listSehin[0].split("  ,  ")[3];
-                        $scope.seiProcess.JTANKA = $scope.listSehin[0].split("  ,  ")[4];
-                        $scope.updateSeiProcess($scope.seiProcess, 'ZAICD');
-                        $scope.sehinHide = true;
-                        document.querySelector("#seisu" + $scope.seiProcess.SIYNO + "ID").select().focus();
+                    }
+                    if ($scope.sehinHide) {
+                        $scope.sehinHide = false;
+                        document.querySelector("#seisu" + $scope.seiProcess.SIYNO + "ID").focus();
                     }
                 }
-                else {
-                    $http({
-                        method: "POST",
-                        url: serverDir + "/Home/checkExistZaiCD/",
-                        data: {
-                            "zaicd": $scope.seiProcess.ZAICD,
-                            "kubun":$scope.seiProcess.ZAIKB
-                        },
-                    })
-                    .success(function (result) {
-                        if (result == "False")
-                            document.querySelector("#sehin" + $scope.seiProcess.SIYNO + "ID").focus();
-                        else {
-                            $scope.listFlag = false;
-                            $scope.sehinHide = true;
-                            document.querySelector("#seisu" + $scope.seiProcess.SIYNO + "ID").select().focus();
-                        }
-                    });
-                }
-            }
-        }
-
-        $scope.seiProcess = seiProcess;
-
-        string = seiProcess.ZAICD + " - " + $scope.kubun.code;
-        if (seiProcess.ZAICD.length > 2) {
-            $http.get(serverDir + "/About/GetSehin?param=" + string)
-            .success(function (data) {
-                $scope.listSehin = data;
-                if ($scope.listSehin.length > 0) {
-                    $scope.sehinHide = false;
-                }
-                else {
-                    $scope.listFlag = false;
-                    $scope.sehinHide = true;
-                }
             });
         }
-        else if(seiProcess.ZAICD.length <=2 && seiProcess.ZAICD.length > 0)
-        {
-            $scope.sehinHide = true;
-        }
-        else {// 
-            $scope.seiProcess.ZUBAN = "";
-            $scope.seiProcess.NAME = "";
-            $scope.seiProcess.KISYU = "";
-            $scope.seiProcess.JTANKA = "";
-        }     
+        //document.querySelector("#searchInput").select().focus();
+        //$scope.processHide = false;
     }
-
-    //ng-change    
-    $scope.searchSehinChange = function (seiProcess) {
-        $scope.seiProcess = seiProcess;
-        string = seiProcess.ZAICD + " - " + $scope.kubun.code;
-        if (seiProcess.ZAICD.length > 3) {
-            $http.get(serverDir + "/About/GetSehin?param=" + string)
-            .success(function (data) {
-                $scope.listSehin = data;
-                if ($scope.listSehin.length > 0) {
-                    $scope.sehinHide = false;
-                }
-                else {
-                    $scope.listFlag = false;
-                    $scope.sehinHide = true;
-                }
-            });
-        }
-        if (seiProcess.ZAICD.length == 0) {
-            $scope.seiProcess.ZUBAN = "";
-            $scope.seiProcess.NAME = "";
-            $scope.seiProcess.KISYU = "";
-            $scope.seiProcess.JTANKA = "";
-            $scope.sehinHide = true;
-        }
-    };
-
-    //ng-blur    
-    $scope.leaveInput = function (seiProcess) {
-        $scope.seiProcess = seiProcess;
-        if (seiProcess.ZAICD == "") {
-            return;            
-        }
-        
-        $http({
-            method: "POST",
-            url: serverDir + "/Home/checkExistZaiCD/",
-            data: {
-                "zaicd": $scope.seiProcess.ZAICD,
-                "kubun": $scope.seiProcess.ZAIKB
-            },
-        })
-        .success(function (result) {
-            if (result == "False")
-                if (!$scope.sehinHide)
-                    document.querySelector("#listSehinID").focus();
-                else
-                    document.querySelector("#sehin" + $scope.seiProcess.SIYNO + "ID").focus();
-            else {
-                //$scope.listFlag = false;
-                $scope.sehinHide = true;
-                //document.querySelector("#seisu" + $scope.seiProcess.SIYNO + "ID").select().focus();
-            }
-        });
-    }
-    
-    //LIST SEHIN
-    //ng-keyup List
-    $scope.listKeyUp = function (inputID, key) {
-
-        //ESC -> keyCode = 27
-        if (key.keyCode == 27) {
-            if (inputID == 'TOKCD') {
-                $scope.tokuiC = "";
-                $scope.tokuiHide = true;
-                document.querySelector("#nounyuCID").focus();
-            }
-            if (inputID == 'ZAICD') {
-
-                $scope.seiProcess.ZAICD = "";
-                $scope.sehinHide = true;
-                document.querySelector("#sehin" + $scope.seiProcess.SIYNO + "ID").focus();
-            }
-        }
-
-        // ENTER: key == 13 => select
-        if (key.keyCode == 13) {
-            if (inputID == 'TOKCD')
-                $scope.getTokui($scope.selectedSehin);
-            if (inputID == 'ZAICD')
-                $scope.selectSehin($scope.selectedSehin);
-        }
-    }
-
-    //ng-mouserover
-    $scope.listMouseover = function () {
-        $scope.listFlag = true;
-    }
-
-    //ng-blur List
-    $scope.listBlur = function (inputID, event) {
-        if (inputID == "TOKCD") {
-            if (!$scope.tokuiHide)
-                document.querySelector("#tokuiNID").focus();
-        }
-        if (inputID == "NOUCD") {
-            if (!$scope.nounyuHide)
-                document.querySelector("#nounyuCID").focus();
-        }
-        if (inputID == "ZAICD") {
-            if (!$scope.sehinHide)
-                document.querySelector("#sehin" + $scope.seiProcess.SIYNO + "ID").focus();
-        }
-
-    };
-
     //SELECT  SEIPROCESS SEHIN
     $scope.selectSehin = function (string) {
         $scope.seiProcess.ZAICD = string.split("  ,  ")[0];
@@ -1888,7 +1187,7 @@ jyuucyu.controller("seisancontroller", function ($location, $filter, $anchorScro
         $scope.seiProcess.KISYU = string.split("  ,  ")[3];
         $scope.seiProcess.JTANKA = string.split("  ,  ")[4];
 
-        $scope.updateSeiProcess($scope.seiProcess, 'ZAICD');
+        $scope.updateSeiProcess($scope.seiProcess);
         $scope.sehinHide = true;
         document.querySelector("#seisu" + $scope.seiProcess.SIYNO + "ID").select().focus();
 
@@ -1942,18 +1241,18 @@ jyuucyu.controller("seisancontroller", function ($location, $filter, $anchorScro
                 "SeiProcess": seiProcess
             },
         })
-            .success(function () {
-                $scope.GetSeiProcess();
-                $scope.wait_hide = true;
-                $scope.processHide = true;
-            });
+          .success(function () {
+              $scope.GetSeiProcess();
+              $scope.wait_hide = true;
+              $scope.processHide = true;
+          });
     }
 
     //CREATE NEW PROCESS
     $scope.createSeiProcess = function () {
         $scope.wait_hide = false;
         $scope.this = {
-            "selected": $scope.selected,
+             "selected": $scope.selected,
             "SIYNO": "", "SIYKB": "",
             "TOKCD": $scope.tokuiC, "TNAME": $scope.tokuiN,
             "ZAIKB": $scope.kubun.code, "ZAICD": "", "ZUBAN": "", "KISYU": "",
@@ -1970,17 +1269,17 @@ jyuucyu.controller("seisancontroller", function ($location, $filter, $anchorScro
                 "SeiProcess": $scope.this
             },
         })
-            .success(function (result) {
-                if (result == "False")
-                {
-                    alert("NG: TKCD NOT FOUND");
-                }
+          .success(function (result) {
+              if (result == "False")
+              {
+                  alert("NG: TKCD NOT FOUND");
+              }
 
-                $scope.GetSeiProcess();
-                $scope.wait_hide = true;
+              $scope.GetSeiProcess();
+              $scope.wait_hide = true;
 
-                $scope.processHide = true;
-            });
+              $scope.processHide = true;
+          });
     }
 
     //UPDATE SEISU
@@ -1988,7 +1287,7 @@ jyuucyu.controller("seisancontroller", function ($location, $filter, $anchorScro
         if (event.keyCode == 13) {            
             $scope.wait_hide = false;
             if (!isNaN(seiProcess.SEISU)) {
-                $scope.updateSeiProcess(seiProcess,'SEISU');
+                $scope.updateSeiProcess(seiProcess);
             }
             else {
                 alert("input number");
@@ -2019,6 +1318,16 @@ jyuucyu.controller("seisancontroller", function ($location, $filter, $anchorScro
         }
     }
 
+
+    $scope.tesssst = function (seiProcess) {
+        if (!$scope.sehinHide) {
+            var a = document.querySelector("#searchInputID")
+            a.focus();
+            var b = seiProcess.ZAICD.length
+            a.setSelectionRange(b, b);            
+        }
+    };
+
     //UPDATE NOUKI
     $scope.updateNouki = function (seiProcess, event) {
         if (event.keyCode == 13) {
@@ -2034,44 +1343,43 @@ jyuucyu.controller("seisancontroller", function ($location, $filter, $anchorScro
                 method: "POST",
                 url: serverDir +"/Home/updateSeiProcess/",
                 data: {
-                    "SeiProcess": seiProcess,
-                    "updateID" : "NOUKI"
+                    "SeiProcess": seiProcess
                 },
             })
-                .success(function (result) {
-                    //go to nextID
-                    if (result.indexOf("NG: ") > -1) alert(result);
-                    else {
-                        var nextID = $scope.getNextID(seiProcess.SIYNO);                      
-                        if (nextID != "last") {
-                            document.querySelector("#sehin" + nextID + "ID").select().focus();
-                            $scope.wait_hide = true;
-                        }
-                    }
-                });
+              .success(function (result) {
+                  //go to nextID
+                  if (result.indexOf("NG: ") > -1) alert(result);
+                  else {
+                      var nextID = $scope.getNextID(seiProcess.SIYNO);                      
+                      if (nextID != "last") {
+                          document.querySelector("#sehin" + nextID + "ID").select().focus();
+                          $scope.wait_hide = true;
+                      }
+                  }
+              });
             $scope.wait_hide = true;
         }
     }
 
+
     //UPDATE SEIPROCESS
-    $scope.updateSeiProcess = function (seiProcess, updateID) {
+    $scope.updateSeiProcess = function (seiProcess, nextID) {
         $scope.wait_hide = false;
         $http({
             method: "POST",
             url: serverDir +"/Home/updateSeiProcess/",
             data: {
-                "SeiProcess": seiProcess,
-                "updateID" : updateID
+                "SeiProcess": seiProcess
             },
         })
-            .success(function () {
-                //go to nextID
-                //$scope.GetSeiProcess();
-                //document.querySelector("#nouki" + seiProcess.SIYNO + "ID").select().focus();
-                $scope.wait_hide = true;
-                //$scope.processHide = false;
+          .success(function () {
+              //go to nextID
+              //$scope.GetSeiProcess();
+              //document.querySelector("#nouki" + seiProcess.SIYNO + "ID").select().focus();
+              $scope.wait_hide = true;
+              //$scope.processHide = false;
 
-            });
+          });
     }
 
     //REFRESH DATA
@@ -2093,6 +1401,10 @@ jyuucyu.controller("seisancontroller", function ($location, $filter, $anchorScro
             strcond = strcond + sei.SIYNO + "','";
         });
 
+        //angular.forEach($scope.listSeiProcess, function (sei) {
+        //    strall = strall + sei.SIYNO + "','";
+        //});
+
         if (strcond == "In ('") {
             alert(langCollection.nonSelect);
             $scope.wait_hide = true;
@@ -2107,11 +1419,11 @@ jyuucyu.controller("seisancontroller", function ($location, $filter, $anchorScro
                     "listseiSelected": strcond
                 },
             })
-                .success(function () {
-                    $scope.GetSeiProcess();
-                    $scope.wait_hide = true;
-                    $scope.processHide = true;
-                });
+              .success(function () {
+                  $scope.GetSeiProcess();
+                  $scope.wait_hide = true;
+                  $scope.processHide = true;
+              });
         }
     }
 
@@ -2155,18 +1467,27 @@ jyuucyu.controller("seisancontroller", function ($location, $filter, $anchorScro
         $scope.tantouHide = true;
     }
 
+
+
     //Get Data from DBF File
     $scope.listCyumn = [];
     $scope.listSeiProcess = [];
     $scope.JyuuProcess = { jyuuCyuNo: "" };
 
-    $scope.filterJyuProcess = [];   
+    $scope.filterJyuProcess = [];
+
+    $scope.TESTBYDUC = function () {
+        
+        alert( angular.isNumber(45));
+    }
 
     $scope.kubunSelect = function (kubunV) {
         if (kubunV.code == 1) $scope.buhinCheckboxHide = true;
         else $scope.buhinCheckboxHide = false;
     }
-        
+    
+     
+    
     //SYNC DATA BUTTON FROM EDI
     $scope.getSeiEDI = function () {
         $scope.wait_hide = !$scope.wait_hide;
@@ -2181,15 +1502,15 @@ jyuucyu.controller("seisancontroller", function ($location, $filter, $anchorScro
                 "kaitenCheck":$scope.kaitenCheck
             },
         })
-            .success(function () {
-                if ($scope.kaitenCheck == true) {
-                    $scope.kubun = $scope.kubuns[1];
-                    $scope.buhinCheckboxHide = true;
-                }
-                $scope.GetSeiProcess();
-                $scope.wait_hide = true;
-                $scope.processHide = true;
-            });
+          .success(function () {
+              if ($scope.kaitenCheck == true) {
+                  $scope.kubun = $scope.kubuns[1];
+                  $scope.buhinCheckboxHide = true;
+              }
+              $scope.GetSeiProcess();
+              $scope.wait_hide = true;
+              $scope.processHide = true;
+          });
     }
     
    
@@ -2248,7 +1569,7 @@ jyuucyu.controller("seisancontroller", function ($location, $filter, $anchorScro
                                     console.log("success!");
                                     if (data.indexOf("NG: ") > -1) {
                                         alert(data2.registerJyuucyuu + data);
-                                            
+                                        
                                     }
                                     else {
                                         alert(data);
@@ -2312,23 +1633,23 @@ jyuucyu.controller("seisancontroller", function ($location, $filter, $anchorScro
                             "JyuuProcess": $scope.this
                         },
                     })
-                    .success(function (data) {
-                        $scope.listSeiProcess = data;
-                        //$scope.ClearAllFill();
-                        //
-                        $scope.wait_hide = !$scope.wait_hide;
+                   .success(function (data) {
+                       $scope.listSeiProcess = data;
+                       //$scope.ClearAllFill();
+                       //
+                       $scope.wait_hide = !$scope.wait_hide;
 
-                        $("html, body").stop().animate({
-                            scrollTop: $('#jyuReg').offset().top - 40
-                        }, '500', 'linear');
-
-
-                        $location.hash('jyuReg');
-                        $anchorScroll();
+                       $("html, body").stop().animate({
+                           scrollTop: $('#jyuReg').offset().top - 40
+                       }, '500', 'linear');
 
 
-                        $scope.btnRegDis = !$scope.btnRegDis;
-                    });
+                       $location.hash('jyuReg');
+                       $anchorScroll();
+
+
+                       $scope.btnRegDis = !$scope.btnRegDis;
+                   });
                 }
 
             });
@@ -2353,6 +1674,10 @@ jyuucyu.controller("seisancontroller", function ($location, $filter, $anchorScro
             strcond = strcond + sei.SIYNO + "','";
         });
 
+        //angular.forEach($scope.listSeiProcess, function (sei) {
+        //    strall = strall + sei.SIYNO + "','";
+        //});
+
         if (strcond == "In ('") {
             alert(langCollection.nonSelect);
             $scope.wait_hide = true;
@@ -2368,10 +1693,10 @@ jyuucyu.controller("seisancontroller", function ($location, $filter, $anchorScro
                     "listSelectedSei": strcond
                 },
             })
-                .success(function (data) {
-                    $scope.listSeiProcess = data;
-                    $scope.wait_hide = true;
-                });
+              .success(function (data) {
+                  $scope.listSeiProcess = data;
+                  $scope.wait_hide = true;
+              });
         }
     }
 
@@ -2514,79 +1839,184 @@ jyuucyu.controller("seisancontroller", function ($location, $filter, $anchorScro
             }
         }
     }
-    $scope.wait_hide = true;
+
 });
 
 
 jyuucyu.config(["datepickerConfig", "datepickerPopupConfig", "timepickerConfig",
-            function (datepickerConfig, datepickerPopupConfig, timepickerConfig) {
-                datepickerConfig.showWeeks = false; // 週番号（日本では馴染みが薄い）を非表示にする
-                datepickerConfig.dayTitleFormat = "yyyy年 MMMM";
-                datepickerPopupConfig.currentText = "本日";
-                datepickerPopupConfig.clearText = "消去";
-                datepickerPopupConfig.toggleWeeksText = "週番号";
-                datepickerPopupConfig.closeText = "閉じる";
-                timepickerConfig.showMeridian = false; // 時刻を24時間表示にする（デフォルトでは12時間表示）
-                datepickerPopupConfig.language = 'jp';
-            }])
+         function (datepickerConfig, datepickerPopupConfig, timepickerConfig) {
+             datepickerConfig.showWeeks = false; // 週番号（日本では馴染みが薄い）を非表示にする
+             datepickerConfig.dayTitleFormat = "yyyy年 MMMM";
+             datepickerPopupConfig.currentText = "本日";
+             datepickerPopupConfig.clearText = "消去";
+             datepickerPopupConfig.toggleWeeksText = "週番号";
+             datepickerPopupConfig.closeText = "閉じる";
+             timepickerConfig.showMeridian = false; // 時刻を24時間表示にする（デフォルトでは12時間表示）
+             datepickerPopupConfig.language = 'jp';
+         }])
 
 jyuucyu.config(['$translateProvider',
-    function ($translateProvider, $window) {
-        //var language = (window.navigator.userLanguage || window.navigator.language).toLowerCase();
-        //console.log(language);
+  function ($translateProvider, $window) {
+      //var language = (window.navigator.userLanguage || window.navigator.language).toLowerCase();
+      //console.log(language);
 
-        $translateProvider.registerAvailableLanguageKeys(['jp', 'en', 'vn'], {
-            'jp': 'jp',
-            'en': 'en',
-            'vn': 'vn'
+      $translateProvider.registerAvailableLanguageKeys(['jp', 'en', 'vn'], {
+          'jp': 'jp',
+          'en': 'en',
+          'vn': 'vn'
+      });
+
+      $translateProvider.useStaticFilesLoader({
+          prefix: '/app.dev/TestJS/lang_',
+          suffix: '.json'
+      });     
+
+      $translateProvider.preferredLanguage("jp");
+      //$translateProvider.preferredLanguage('vn');
+      // $translateProvider.use('de');
+      //$translateProvider.useCookieStorage();
+      //$translateProvider.fallbackLanguage("en");
+  }
+]);
+
+jyuucyu.controller('changeLang', ['$scope', '$translate','$http',
+  function ($scope, $translate, $http) {
+      $scope.switchLanguage = function (key) {
+          $translate.use(key);
+          $scope.langMulti = key;
+
+          //langCollection = key;
+
+          $http.get('/app.dev/TestJS/lang_' + key + '.json').success(function (data2) {
+              langCollection = data2;
+              //alert(data2.registerJyuucyuu + data);
+          });
+
+          $http({
+              method: "POST",
+              url: serverDir + "/About/setLangSel/",
+              data: {
+                  "lang": key
+              },
+          })
+            .success({
+                
+            });
+      };
+
+      $http.get(serverDir + "/About/getLangSel")
+         .success(function (data) {
+             $scope.switchLanguage(data);
+             $scope.langMulti = data;
+             $translate.use(data);
+         });
+
+      
+  }
+]);
+/*
+jyuucyu.run(["$rootScope", function ($scope) {
+    $scope.date = new Date();  // デフォルトで現在時刻を表示
+    $scope.alert = null;
+    $scope.done = function () {
+        $scope.alert = { type: 'success', msg: "" + $scope.date + " = " + $scope.date.getTime() };
+    }
+}]);
+*/
+
+//no need
+jyuucyu.controller('angularController', function ($scope, $http) {
+    $http.get(serverDir + "/About/GetSehins/")
+        .success(function (data) {
+            $scope.listSehin = data;
+            //console.warn(GetSehins.status);
+            //alert(GetSehins.status);
+            $scope.selectedSehins = [];
+
+            $scope.clickedItem = function (sehin) {
+                console.log("Selected: " + sehin.Code);
+                //$scope.doneAfterClick = todo.done;
+                //$scope.todoText = todo.text;
+
+                var idx = $scope.selectedSehins.indexOf(sehin);
+                if (idx > -1) {
+                    $scope.selectedSehins.splice(idx, 1);
+                }
+
+                    // is newly selected
+                else {
+                    //var obj = selectedItem(itemId);
+                    $scope.selectedSehins.push(sehin);
+                    idx = $scope.listSehin.indexOf(sehin);
+                    if (idx > -1) {
+                        $scope.listSehin.splice(idx, 1);
+                    }
+
+                };
+            }
+
+            $scope.del = function (sehin) {
+
+                var isConfirmed = confirm("Are you sure to delete code " + sehin.Code + " ?");
+                if (isConfirmed) {
+                    var idx = $scope.selectedSehins.indexOf(sehin);
+                    if (idx > -1) {
+                        $scope.selectedSehins.splice(idx, 1);
+                        $scope.listSehin.push(sehin);
+                        $scope.listSehin.sort();
+                    }
+                }
+                else {
+                    alert('NO');
+                }
+            }
+
+            $scope.doubleClickedItem = function (sehin) {
+                console.log("Selected: " + sehin.Code);
+
+                //$scope.doneAfterClick = todo.done;
+                //$scope.todoText = todo.text;
+
+                var idx = $scope.selectedSehins.indexOf(sehin);
+                if (idx > -1) {
+                    $scope.selectedSehins.splice(idx, 1);
+                }
+
+                    // is newly selected
+                else {
+                    //var obj = selectedItem(itemId);
+                    $scope.selectedSehins.push(sehin);
+                    idx = $scope.listSehin.indexOf(sehin);
+                    if (idx > -1) {
+                        $scope.listSehin.splice(idx, 1);
+                    }
+
+                };
+
+            }
+
+            
+
         });
 
-        $translateProvider.useStaticFilesLoader({
-            prefix: '/app.dev/TestJS/lang_',
-            suffix: '.json'
-        });     
+    $scope.doPost123 = function () {
+        $http({
+            method: "POST",
+            url: serverDir +"/About/PostData/",
+            data: {
+                "listSehins": $scope.selectedSehins
+            },
+        })
+        .success(function (data) {
 
-        $translateProvider.preferredLanguage("jp");
-        //$translateProvider.preferredLanguage('vn');
-        // $translateProvider.use('de');
-        //$translateProvider.useCookieStorage();
-        //$translateProvider.fallbackLanguage("en");
-    }
-]);
-
-jyuucyu.controller('changeLang', ['$scope', '$translate', '$http',
-    function ($scope, $translate, $http) {
-        $scope.switchLanguage = function (key) {
-            $translate.use(key);
-            $scope.langMulti = key;
-
-            //langCollection = key;
-
-            $http.get('/app.dev/TestJS/lang_' + key + '.json').success(function (data2) {
-                langCollection = data2;
-                //alert(data2.registerJyuucyuu + data);
-            });
-
-            $http({
-                method: "POST",
-                url: serverDir + "/About/setLangSel/",
-                data: {
-                    "lang": key
-                },
-            })
-            .success({
-
-            });
-        };
-
-        $http.get(serverDir + "/About/getLangSel")
-            .success(function (data) {
-                $scope.switchLanguage(data);
-                $scope.langMulti = data;
-                $translate.use(data);
-            });
-
+            if ($scope.selectedSehins.length < 1) {
+                alert('Empty');
+            }
+            else {
+                alert('OK');
+            }
+        });
 
     }
-]);
 
+});

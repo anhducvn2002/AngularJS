@@ -1,2 +1,2 @@
-﻿var app = angular.module("myApp", []);
-var jyuucyu = angular.module("myJyucyu",[]);
+﻿var app = angular.module("myApp2", []);
+//var jyuucyu = angular.module("myJyucyu", ["ui.bootstrap"]);

@@ -1,5 +1,9 @@
 ﻿@using Microsoft.AspNet.Identity
 @if (Request.IsAuthenticated)
+
+
+
+
 {
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
@@ -16,7 +20,12 @@
 else
 {
     <ul class="nav navbar-nav navbar-right">
+        <li ng-controller="changeLang"><img src="~/Content/Flag/japan-flag-icon-32.png" ng-click="switchLanguage('jp')" />&nbsp</li>
+        <li ng-controller="changeLang"><img src="~/Content/Flag/united-states-of-america-flag-icon-32.png" ng-click="switchLanguage('en')" />&nbsp</li>
+        <li ng-controller="changeLang"><img src="~/Content/Flag/vietnam-flag-icon-32.png" ng-click="switchLanguage('vn')" />&nbsp</li>
+
         <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
         <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+        <!--<div ng-controller="loadJyucyu" style="font-size:15px;color:white;font-style:oblique"> {{FacName}}  </div>-->
     </ul>
 }

@@ -2,13 +2,6 @@
     ViewBag.Title = "About";
 }
 
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-
-
-<script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-<!-- Material Design icon font -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
 <p></p>
 <br />
@@ -19,149 +12,18 @@
     <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
             <!-- Title -->
-            <span class="mdl-layout-title">Title</span>
+            <span class="mdl-layout-title" translate>titleL</span>
         </div>
         <!-- Tabs -->
         <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
-            <a href="#scroll-tab-1" class="mdl-layout__tab is-active">TESCWORK</a>
-            <a href="#scroll-tab-2" class="mdl-layout__tab">受注入力</a>
-            <a href="#scroll-tab-3" class="mdl-layout__tab">生産予定入力</a>
-            <a href="#scroll-tab-4" class="mdl-layout__tab">受注登録</a>
-            <!--
+            <a href="#scroll-tab-2" class="mdl-layout__tab is-active"><span translate>orderL</span></a>
+            <a href="#scroll-tab-3" class="mdl-layout__tab"><span translate>scheduleProdL</span></a>
+            <a href="#scroll-tab-4" class="mdl-layout__tab"><span translate>orderL</span></a>
             <a href="#scroll-tab-5" class="mdl-layout__tab">Tab 5</a>
-            <a href="#scroll-tab-6" class="mdl-layout__tab">Tab 6</a>-->
+            <!--<a href="#scroll-tab-6" class="mdl-layout__tab">Tab 6</a>-->
         </div>
     </header>
-
-
-
-        <div class="mdl-layout__drawer">
-            <span class="mdl-layout-title">Title</span>
-        </div>
-
-        <main class="mdl-layout__content" ng-app="myJyucyu">
-            <section class="mdl-layout__tab-panel is-active" id="scroll-tab-1">
-                <div class="page-content">
-                    <div ng-app="myJyucyu" ng-controller="usercontroller">
-                        <label>Enter a country</label>
-                        <input type="text" name="country" id="country" ng-model="country" ng-keyup="complete(country)" class="form-control" ng-text-change="test2(country)" />
-                        <ul class="list-group" ng-model="hidethis" ng-hide="hidethis">
-                            <li class="list-group-item" ng-repeat="countrydata in filterCountry" ng-click="fillTextbox(countrydata)">{{countrydata}}</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-
-
-            <section class="mdl-layout__tab-panel" id="scroll-tab-2">
-                <div class="page-content"><!-- Your content goes here --></div>
-            </section>
-            <section class="mdl-layout__tab-panel" id="scroll-tab-3">
-                <div class="page-content"><!-- Your content goes here --></div>
-            </section>
-
-
-            <section class="mdl-layout__tab-panel" id="scroll-tab-4">
-                <div class="page-content">
-                    <div ng-app="myJyucyu" ng-controller="loadJyucyu">
-                        <p></p>
-                        <div ng-controller="usercontroller">
-                            <table border="3">
-                                <tr>
-                                    <td>受注No</td>
-                                    <td><input type="text" value={{jyuuCyuNo}} /></td>
-                                    <td colspan="2"></td>
-                                </tr>
-                                <tr>
-                                    <td>得意先</td>
-                                    <td>
-                                            <input type="text" ng-model="country" ng-keyup="complete(country)" value={{tokuiCode}} />
-                                            <ul class="list-group" ng-model="hidethis" ng-hide="hidethis">
-                                                <li class="list-group-item" ng-repeat="countrydata in filterCountry" ng-click="fillTextbox(countrydata)">{{countrydata}}</li>
-                                            </ul>
-                                    </td>
-                                    <td colspan="2"><input type="text" value={{tokuiName}} /></td>
-                                </tr>
-                                <tr>
-                                    <td>納入場所</td>
-                                    <td><input type="text" value={{nouNyuCode}} /></td>
-                                    <td colspan="2"><input type="text" value={{noNyuName}} /></td>
-                                </tr>
-                                <tr>
-                                    <td>製品</td>
-                                    <td><input type="text" value={{seiHinCode}} /></td>
-                                    <td><input type="text" value={{seiHinZuban}} /></td>
-                                    <td><input type="text" value={{seiHinKisyu}} /></td>
-                                </tr>
-                            </table>
-
-                        </div>
-
-                        <div>
-                            <table border="3">
-                                <tr>
-                                    <td>受注数</td>
-                                    <td><input type="text" value={{quantity}} /></td>
-                                    <td width="150"></td>
-                                    <td>部門</td>
-                                    <td><input type="text" value={{bumonCode}} /></td>
-                                    <td><input type="text" value={{bumonName}} /></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>受注単価</td>
-                                    <td><input type="text" value={{tanka}} /></td>
-                                    <td></td>
-                                    <td>担当者</td>
-                                    <td><input type="text" value={{tantouCode}} /></td>
-                                    <td><input type="text" value={{tantouName}} /></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>受注納期</td>
-                                    <td><input type="text" value={{nouki}} /></td>
-                                    <td></td>
-                                    <td>注文No</td>
-                                    <td colspan="2" width="300"><input width="300" type="text" value={{cyumonNo1}} /></td>
-                                    <td><input type="text" value={{cyumonNo2}} /></td>
-                                </tr>
-                                <tr>
-                                    <td>納入予定</td>
-                                    <td><input type="text" value={{nounyu}} /></td>
-                                    <td></td>
-                                    <td>製造No</td>
-                                    <td colspan="2"><input type="text" value={{seizou}} /></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>備考</td>
-                                    <td colspan="2"><input type="text" value={{bikou}} /></td>
-                                    <td></td>
-                                </tr>
-                            </table>
-
-                        </div>
-
-                    </div>
-                </div>
-            </section>
-
-
-            <!--
-            <section class="mdl-layout__tab-panel" id="scroll-tab-5">
-                <div class="page-content"></div>
-            </section>
-            <section class="mdl-layout__tab-panel" id="scroll-tab-6">
-                <div class="page-content"></div>
-            </section>
-            -->
-        </main>
+       
 
 </div>
 
-<script src="~/TestJS/myApp.js"></script>
-<script src="~/TestJS/jyuuCyu.js"></script>
-<script src="~/TestJS/myCtrl.js"></script>

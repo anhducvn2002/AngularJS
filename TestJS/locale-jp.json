@@ -1,0 +1,17 @@
+﻿{
+  "Language": "English",
+  "orderNoL": "受注No",
+  "cusL": "得意先",
+  "deliveryLocL": "納入場所",
+  "productL": "製品",
+  "quantityL": "受注数",
+  "unitL": "単価",
+  "orderDateL": "受注納期",
+  "deliveryDateL": "納入場所",
+  "departmentL": "部門",
+  "picL": "担当者",
+  "customerOrderL": "注文No",
+  "productionNoL": "製造No",
+  "remarksL": "備考",
+
+}

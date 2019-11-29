@@ -1,0 +1,35 @@
+﻿{
+  "HEADLINE": "JP da!",
+  "LANG_DE_DE": "Sprache: Deutsch",
+  "LANG_EN_US": "Sprache: Englisch",
+
+  "orderNoL": "受注No",
+  "cusL": "得意先",
+  "deliveryLocL": "納入場所",
+  "productL": "製品",
+  "quantityL": "受注数",
+  "unitL": "単価",
+  "orderDateL": "受注納期",
+  "deliveryDateL": "納入予定",
+  "departmentL": "部門",
+  "picL": "担当者",
+  "customerOrderL": "注文No",
+  "productionNoL": "製造No",
+  "remarksL": "備考",
+  "orderL": "受注入力",
+  "scheduleProdL": "生産予定入力",
+  "titleL": "Japanese",
+  "ediL": "EDI受注データ取込",
+  "regL": "登録",
+  "listL": "一覧",
+  "registerJyuucyuu": "登録受注番号",
+  "customerOrderDoube": "受注No.重複エラーです。",
+  "confirmTanka": "入力単価とTWの単価が異なります。よろしいですか？",
+  "inputError": "が未入力です。",
+  "editButton": "修正",
+  "newButton": "新規",
+  "delButton": "削除",
+  "nonSelect": "１行だけ１にしてください。"
+
+
+}
