@@ -1,6 +1,8 @@
 ﻿
 var jyuucyu = angular.module('myApp2', ['ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
 
+//var CustomCtrlApp = angular.module('CustomCtrlApp', ['ui.bootstrap']);
+
 var langCollection = [];
 var locationstr = window.location.pathname + "";
 var serverDir = "/" + locationstr.split('/')[1];
@@ -243,7 +245,8 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
                     alert('納入場所は存在しません。');
 
                     $scope.nounyuStyle = {
-                        "color": "red"
+                        "color": "red", "disabled":"true"
+
                     }
                     $scope.nounyuC = "";
                     $scope.nounyuN = "納入場所は存在しません。";
@@ -269,7 +272,7 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
             document.querySelector("#sehinZID").select().focus();
         }
 
-        else if (b.keyCode == 13 || b.keyCode == 38 || b.keyCode == 40) {
+        else if (b.keyCode == 13 || b.keyCode == 40) {
 
             if ($scope.tokuiN == "") {
                 $scope.tokuiC = "";
@@ -278,7 +281,6 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
             else {
                 if(!$scope.tokuiHide){
                     document.querySelector("#selectListTokuiID").focus();
-                    $scope.listFlag = true;
                     if ($scope.listTokui.length == 1) {
                         $scope.getTokui($scope.listTokui[0].split("  ,  ")[0]);
                         $scope.tokuiN = $scope.listTokui[0].split("  ,  ")[1];
@@ -290,9 +292,9 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
                 else {
                     $http({
                         method: "POST",
-                        url: serverDir + "/Home/checkExistTokuiN/",
+                        url: serverDir + "/Home/checkExistTokuiC/",
                         data: {
-                            "tokuiN": $scope.tokuiN
+                            "tokuiC": $scope.tokuiC
                         },
                     })
                    .success(function (result) {
@@ -301,6 +303,9 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
                        else {
                            $scope.listFlag = false;
                            $scope.tokuiHide = true;
+                           //
+
+
                            document.querySelector("#nounyuNID").focus();
                        }
                    });
@@ -386,6 +391,7 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
                 }
                 else {
                     $scope.nounyuC = "";
+                    document.querySelector("#tokuiNID").select().focus();
                     $scope.nounyuHide = true;
                     return;
                 }
@@ -480,7 +486,7 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
                 $scope.nounyuC = "";
                 $scope.nounyuN = "";
                 $scope.nounyuHide = true;
-                document.querySelector("#sehinZID").focus();
+                document.querySelector("#tokuiNID").focus();
             }
             if (inputID == 'ZAICD') {
                 $scope.sehinC = "";
@@ -553,12 +559,11 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
         //ESC -> keyCode = 27
 
         if (b.keyCode == 27) {
-
-
-
             $scope.nounyuC = "";
             $scope.nounyuN = "";
-
+            $scope.nounyuHide = true;
+            document.querySelector("#tokuiNID").select().focus();
+            return;
             $http.get(serverDir + "/About/GetNouNyu?param=" + $scope.nounyuN + " - " + $scope.tokuiC)
                 .success(function (data) {
                     $scope.listNounyu = data;
@@ -581,11 +586,18 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
             document.querySelector("#nounyuNID").select().focus();
         }
 
-        else if (b.keyCode == 13 || b.keyCode == 38 || b.keyCode == 40) {
+        else if (b.keyCode == 13 || b.keyCode == 40) {
 
             if ($scope.nounyuN == "" || $scope.nounyuN == null) {
                 if (!$scope.nounyuHide)
-                    document.querySelector("#selectListNounyuID").focus();
+                    if ($scope.listNounyu.length == 1) {
+                        $scope.nounyuC = ($scope.listNounyu[0].split("  ,  ")[0]);
+                        $scope.nounyuN = $scope.listNounyu[0].split("  ,  ")[1];
+                        $scope.listFlag = false;
+                        $scope.nounyuHide = true;
+                        document.querySelector("#sehinZID").focus();
+                    }
+                    else document.querySelector("#selectListNounyuID").focus();
                 else document.querySelector("#sehinZID").focus();
             }
             else {
@@ -659,9 +671,9 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
     //ng-change
     $scope.searchNoynyuChange = function (string) {
         $scope.nounyuC = "";
-        if (string.length > 0) {
+        //if (string.length > 0) {
             //check TOKCD
-            if ($scope.tokuiC == null || $scope.tokuiC == "") {
+            if ($scope.tokuiC == "") {
                 document.querySelector("#tokuiNID").focus();
                 alert('Pls input tokui first');
             }
@@ -684,11 +696,11 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
 
                 });
             }
-        }
-        else {
-            $scope.nounyuC = "";
-            $scope.nounyuHide = true;
-        }
+        //}
+        //else {
+        //    $scope.nounyuC = "";
+        //    $scope.nounyuHide = true;
+        //}
     };
 
     //ng-blur
@@ -728,7 +740,7 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
             return;
         }
 
-        if (b.keyCode == 13 || b.keyCode == 38 || b.keyCode == 40) {
+        if (b.keyCode == 13 || b.keyCode == 40) {
 
             if (string == "") {
                 document.querySelector("#quantityID").focus();
@@ -854,7 +866,7 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
             return;
         }
 
-        if (b.keyCode == 13 || b.keyCode == 38 || b.keyCode == 40) {
+        if (b.keyCode == 13 || b.keyCode == 40) {
 
             if (string == "") {
                 document.querySelector("#cyumonNo1ID").focus();
@@ -885,7 +897,7 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
                         else {
                             $scope.listFlag = false;
                             $scope.tantouHide = true;
-                            document.querySelector("#seizouID").select().focus();
+                            document.querySelector("#cyumonNo1ID").select().focus();
                         }
                     });
                 }
@@ -1068,6 +1080,7 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
     //SYNC DATA BUTTON FROM EDI
     $scope.syncEDIDATA = function () {
         $scope.wait_hide = !$scope.wait_hide;
+        $scope.ClearAllFill();
         $http({
             method: "POST",
             url: serverDir +"/About/syncEDIDATA/",
@@ -1088,116 +1101,124 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
     //BUTTON GET JYUUCYU + EDIT JYUCYU
     $scope.GetJyuProcess = function () {
         $scope.processHide = !$scope.processHide;
-        $scope.selectedAll = false;
-        $scope.wait_hide = !$scope.wait_hide;
-        $http({
-            method: "POST",
-            url: serverDir +"/About/GetJyuProcess/",
-            data: {
-                //"listSehins": $scope.selectedSehins
-            },
-        })
-        .success(function (data) {
-            $scope.listJyuProcess = data;
-            $scope.searchValue = "";
 
-            //EDIT BUTTON
-            $scope.edit = function (jyuProcess) {
-                $scope.wait_hide = false;
+        if (!$scope.processHide) {
+            $scope.ClearAllFill();
+            $scope.selectedAll = false;
+            $scope.wait_hide = !$scope.wait_hide;
+            $http({
+                method: "POST",
+                url: serverDir + "/About/GetJyuProcess/",
+                data: {
+                    //"listSehins": $scope.selectedSehins
+                },
+            })
+            .success(function (data) {
+                $scope.listJyuProcess = data;
+                $scope.searchValue = "";
 
-                $scope.JyuuProcess = jyuProcess;
+                //EDIT BUTTON
+                $scope.edit = function (jyuProcess) {
+                    $scope.wait_hide = false;
 
-                $scope.jyuuCyuNo = jyuProcess.Jyuucyuno;
-                $scope.tokuiC = jyuProcess.Tokuicode;
-                $scope.tokuiN = jyuProcess.Tokuiname;
-                $scope.nounyuC = jyuProcess.Nounyucode;
-                $scope.nounyuN = jyuProcess.Nonyuname;
-                $scope.sehinC = jyuProcess.Seihincode;
-                $scope.sehinZ = jyuProcess.Seihinzuban;
-                $scope.sehinN = jyuProcess.Seihinname;
-                $scope.sehinK = jyuProcess.Seihinkisyu;
-                $scope.quantity = jyuProcess.Quantity;
-                $scope.sehinT = jyuProcess.Tanka;
+                    $scope.ClearAllFill();
 
-                $scope.bumonCode = "999";
-                $scope.bumonName = "データCONV";
-                $scope.tantouC = "999";
-                $scope.tantouN = "データCONV";
+                    $scope.JyuuProcess = jyuProcess;
 
-                $scope.tantouC = jyuProcess.Tantoucode;
-                $scope.tantouN = $http({
-                    method: "POST",
-                    url: serverDir +"/About/findPIC/",
-                    data: {
-                        "JTANCD": jyuProcess.Tantoucode
-                    },
-                }).success(function (tantouN) {
-                    $scope.tantouN = tantouN;
-                });
+                    $scope.jyuuCyuNo = jyuProcess.Jyuucyuno;
+                    $scope.tokuiC = jyuProcess.Tokuicode;
+                    $scope.tokuiN = jyuProcess.Tokuiname;
+                    $scope.nounyuC = jyuProcess.Nounyucode;
+                    $scope.nounyuN = jyuProcess.Nonyuname;
+                    $scope.sehinC = jyuProcess.Seihincode;
+                    $scope.sehinZ = jyuProcess.Seihinzuban;
+                    $scope.sehinN = jyuProcess.Seihinname;
+                    $scope.sehinK = jyuProcess.Seihinkisyu;
+                    $scope.quantity = jyuProcess.Quantity;
+                    $scope.sehinT = jyuProcess.Tanka;
 
-                //$scope.cyumonStyle = "";
-                $scope.cyumonNo1 = jyuProcess.Cyumonno1;
-                $scope.cyumonNo2 = jyuProcess.Cyumonno2;
-                $scope.seizou = jyuProcess.Seizou;
-                $scope.bikou = jyuProcess.Bikou;
-                $scope.Status = jyuProcess.Status;
+                    $scope.bumonCode = "999";
+                    $scope.bumonName = "データCONV";
+                    $scope.tantouC = "999";
+                    $scope.tantouN = "データCONV";
 
-                /*
-                //Set Date for Nouki                        
-                var yyyy = jyuProcess.Nouki.substring(0, 4);
-                var MM = jyuProcess.Nouki.substring(4, 6);
-                var dd = jyuProcess.Nouki.substring(6, 8);
-                var nouki = new Date(yyyy + "-" + MM + "-" + dd);
-    
-                $scope.dateNouki = yyyy + "-" + MM + "-" + dd;
-    
-                //Set Date for Nounyu
-                yyyy = jyuProcess.Nounyu.substring(0, 4);
-                MM = jyuProcess.Nounyu.substring(4, 6);
-                dd = jyuProcess.Nounyu.substring(6, 8);
-                var nounyu = new Date(yyyy + "-" + MM + "-" + dd);
-    
-                $scope.dateNounyu = yyyy + "-" + MM + "-" + dd;
-                */
+                    $scope.tantouC = jyuProcess.Tantoucode;
+                    $scope.tantouN = $http({
+                        method: "POST",
+                        url: serverDir + "/About/findPIC/",
+                        data: {
+                            "JTANCD": jyuProcess.Tantoucode
+                        },
+                    }).success(function (tantouN) {
+                        $scope.tantouN = tantouN;
+                    });
 
-                $scope.dateNouki = jyuProcess.Nouki;
-                $scope.dateNounyu = jyuProcess.Nounyu;
+                    //$scope.cyumonStyle = "";
+                    $scope.cyumonNo1 = jyuProcess.Cyumonno1;
+                    $scope.cyumonNo2 = jyuProcess.Cyumonno2;
+                    $scope.seizou = jyuProcess.Seizou;
+                    $scope.bikou = jyuProcess.Bikou;
+                    $scope.Status = jyuProcess.Status;
 
-
-                $scope.validateDATA(jyuProcess.Status);
-
-                $location.hash('jyuReg');
-                $anchorScroll();
-
-                $scope.btnRegDis = "false";
-                $scope.wait_hide = true;
-            }
-
-            //ALL SELECTED CLICK
-            $scope.selectedALLJYUCYU = function () {
-                $scope.selectedAll = !$scope.selectedAll;
-
-                angular.forEach($filter('filter')($scope.listJyuProcess, $scope.searchValue), function (jyuu, key) {
                     /*
-                    angular.forEach(jyuu, function (value, key) {
-                        alert(value);
-                    });*/
+                    //Set Date for Nouki                        
+                    var yyyy = jyuProcess.Nouki.substring(0, 4);
+                    var MM = jyuProcess.Nouki.substring(4, 6);
+                    var dd = jyuProcess.Nouki.substring(6, 8);
+                    var nouki = new Date(yyyy + "-" + MM + "-" + dd);
+        
+                    $scope.dateNouki = yyyy + "-" + MM + "-" + dd;
+        
+                    //Set Date for Nounyu
+                    yyyy = jyuProcess.Nounyu.substring(0, 4);
+                    MM = jyuProcess.Nounyu.substring(4, 6);
+                    dd = jyuProcess.Nounyu.substring(6, 8);
+                    var nounyu = new Date(yyyy + "-" + MM + "-" + dd);
+        
+                    $scope.dateNounyu = yyyy + "-" + MM + "-" + dd;
+                    */
 
-                    if ($scope.selectedAll == false) {
-                        jyuu.selected = false;
-                    }
-                    else jyuu.selected = true;
-                });
+                    $scope.dateNouki = jyuProcess.Nouki;
+                    $scope.dateNounyu = jyuProcess.Nounyu;
 
-            }
 
-            //$scope.processHide = false;
-            $scope.wait_hide = true;
-        });
+                    $scope.validateDATA(jyuProcess.Status);
+
+                    $location.hash('jyuReg');
+                    $anchorScroll();
+
+                    $scope.btnRegDis = "false";
+                    $scope.wait_hide = true;
+                }
+
+                //ALL SELECTED CLICK
+                $scope.selectedALLJYUCYU = function () {
+                    $scope.selectedAll = !$scope.selectedAll;
+
+                    angular.forEach($filter('filter')($scope.listJyuProcess, $scope.searchValue), function (jyuu, key) {
+                        /*
+                        angular.forEach(jyuu, function (value, key) {
+                            alert(value);
+                        });*/
+
+                        if ($scope.selectedAll == false) {
+                            jyuu.selected = false;
+                        }
+                        else jyuu.selected = true;
+                    });
+
+                }
+
+                //$scope.processHide = false;
+                $scope.wait_hide = true;
+            });
+        }
     }
 
     //Register new Order BUTTON
     $scope.registerOrder = function () {        
+
+        if (!$scope.tokuiHide || !$scope.nounyuHide || !$scope.sehinHide || !$scope.tantouHide) return;
 
         var result = "";
         if ($scope.tokuiC == "" || $scope.tokuiC == null) {
@@ -1316,6 +1337,8 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
 
     //BUTTON UPDATE
     $scope.savetoJyuEDI = function () {
+        if (!$scope.tokuiHide || !$scope.nounyuHide || !$scope.sehinHide || !$scope.tantouHide) return;
+
         $scope.wait_hide = !$scope.wait_hide;
 
         $scope.this = {
@@ -1413,6 +1436,32 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
         $scope.cyumonReadOnly = "";
         $scope.dateNouki = "";
         $scope.dateNounyu = "";
+
+        if (!$scope.nounyuHide) {
+            $scope.nounyuC = "";
+            $scope.nounyuN = "";
+            $scope.nounyuHide = true;
+        }
+        if (!$scope.tokuiHide) {
+            $scope.tokuiC = "";
+            $scope.tokuiN = "";
+            $scope.tokuiHide = true;
+        }
+
+        if (!$scope.sehinHide) {
+            $scope.sehinC = "";
+            $scope.sehinZ = "";
+            $scope.sehinN = "製品名称";
+            $scope.sehinK = "機種";
+            $scope.quantity = "1";
+            $scope.sehinT = "0";
+            $scope.sehinHide = true;
+        }
+        if (!$scope.tantouHide) {
+            $scope.tantouC = "";
+            $scope.tantouN = "担当者";
+            $scope.tantouHide = true;
+        }
 
         $scope.btnRegDis = true;
 
@@ -1521,6 +1570,7 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
 
     //BUTTON UPDATE PROCESS
     $scope.updateOrderProcess = function () {
+        $scope.processHide = true;
         $scope.GetJyuProcess();
         $scope.processHide = false;
     }
@@ -1634,6 +1684,9 @@ jyuucyu.controller("jyucyucontroller", function ($location, $filter, $anchorScro
 
         $scope.wait_hide = true;
     }
+
+
+
     $scope.wait_hide = true;
 });
 
@@ -1650,8 +1703,173 @@ jyuucyu.controller("seisancontroller", function ($location, $filter, $anchorScro
     //Get Tokuisaki + Nounyu data
     $scope.createButtonHide = true;
 
-    $scope.listTokui = []
-    $scope.searchTokui = function (string) {
+
+    //******************************************************************
+    //TOKCD NAME SEARCH
+    //Get Tokui
+    $scope.listTokui = [];
+    $scope.getTokui = function (string) {
+        $scope.tokuiC = string.split("  ,  ")[0];
+        $scope.tokuiN = string.split("  ,  ")[1];
+        $scope.tokuiHide = true;
+        $scope.createButtonHide = false;
+    }
+
+    //INPUT
+    //ng-keyup
+    $scope.searchTokui = function (string, b) {
+        //ESC -> keyCode = 27
+
+        if (b.keyCode == 27) {
+            $scope.tokuiC = "";
+            $scope.tokuiN = "";
+            $scope.tokuiHide = true;
+            document.querySelector("#selectKubunID").select().focus();
+        }
+
+        else if (b.keyCode == 13 || b.keyCode == 40) {
+
+            if ($scope.tokuiN == "") {
+                $scope.tokuiC = "";
+                document.querySelector("#selectKubunID").focus();
+            }
+            else {
+                if (!$scope.tokuiHide) {
+                    document.querySelector("#selectListTokuiIDS").focus();
+                    $scope.listFlag = true;
+                    if ($scope.listTokui.length == 1) {
+                        $scope.getTokui($scope.listTokui[0].split("  ,  ")[0]);
+                        $scope.tokuiN = $scope.listTokui[0].split("  ,  ")[1];
+                        $scope.tokuiHide = true;
+                        document.querySelector("#selectKubunID").focus();
+                    }
+                }
+                else {
+                    $http({
+                        method: "POST",
+                        url: serverDir + "/Home/checkExistTokuiN/",
+                        data: {
+                            "tokuiN": $scope.tokuiN
+                        },
+                    })
+                   .success(function (result) {
+                       if (result == "False")
+                           document.querySelector("#tokuiNIDS").focus();
+                       else {
+                           $scope.tokuiHide = true;
+                           //
+
+
+                           document.querySelector("#selectKubunID").focus();
+                       }
+                   });
+                }
+            }
+        }
+
+        else {
+            $scope.tokuiC = "";
+            if (string.length > 0) {
+                $http.get(serverDir + "/About/GetTokuiCD?param=" + string)
+                .success(function (data) {
+                    $scope.listTokui = data;
+                    if ($scope.listTokui.length > 0) {
+                        $scope.tokuiHide = false;
+                    }
+                    else {
+                        $scope.tokuiC = "";
+                        $scope.tokuiHide = true;
+                    }
+                });
+            }
+            if (string.length == 0) {
+                $scope.tokuiC = "";
+                $scope.tokuiHide = true;
+            }
+        }
+    }
+
+    //ng-change
+    $scope.searchTokuiChange = function (string) {
+        $scope.tokuiC = "";
+        if (string.length > 0) {
+            $http.get(serverDir + "/About/GetTokuiCD?param=" + string)
+            .success(function (data) {
+                $scope.listTokui = data;
+                if ($scope.listTokui.length > 0) {
+                    $scope.tokuiHide = false;
+                } else {
+                    $scope.tokuiC = "";
+                    $scope.tokuiHide = true;
+                }
+            });
+        }
+        if (string.length == 0) {
+            $scope.tokuiC = "";
+            $scope.tokuiHide = true;
+        }
+    };
+
+    //ng-blur
+    $scope.leaveInput = function (key, eventCode) {
+        if (key == "TOKCD") {
+            if ($scope.tokuiN == "") {
+                $scope.tokuiC = "";
+                return;
+            }
+            $http({
+                method: "POST",
+                url: serverDir + "/Home/checkExistTokuiN/",
+                data: {
+                    "tokuiN": $scope.tokuiN
+                },
+            })
+            .success(function (result) {
+                if (result == "False") {
+                    if (!$scope.tokuiHide) document.querySelector("#selectListTokuiIDS").focus();
+                    else document.querySelector("#tokuiNIDS").focus();
+                }
+                else
+                    $scope.tokuiHide = true;
+            });
+
+            //else document.querySelector("#tokuiNID").focus();
+        }
+        
+    }
+
+    //LIST SEHIN
+    //ng-keyup List
+    $scope.listKeyUpS = function (inputID, key) {
+
+        //ESC -> keyCode = 27
+        if (key.keyCode == 27) {
+            if (inputID == 'TOKCD') {
+                $scope.tokuiC = "";
+                $scope.tokuiN = "";
+                $scope.tokuiHide = true;
+                document.querySelector("#selectKubunID").focus();
+            }
+            
+        }
+
+        // ENTER: key == 13 => select
+        if (key.keyCode == 13) {
+            if (inputID == 'TOKCD')
+                $scope.getTokui($scope.selectedTokuiS);
+        }
+    }
+
+    //ng-blur List
+    $scope.listBlur = function (inputID) {
+        if (inputID == "TOKCD") {
+            if (!$scope.tokuiHide)
+                document.querySelector("#tokuiNIDS").focus();
+        }
+    };
+    
+
+    $scope.searchTokui2 = function (string) {
         if (string.length > 0) {
             $http.get(serverDir + "/About/GetTokuiCD?param=" + string)
             .success(function (data) {
@@ -1670,7 +1888,7 @@ jyuucyu.controller("seisancontroller", function ($location, $filter, $anchorScro
         }
         else $scope.tokuiHide = true;
     }
-    $scope.getTokui = function (string) {
+    $scope.getTokui2 = function (string) {
         $scope.tokuiC = string.split("  ,  ")[0];
         $scope.tokuiN = string.split("  ,  ")[1];
         $scope.tokuiHide = true;
@@ -1705,7 +1923,7 @@ jyuucyu.controller("seisancontroller", function ($location, $filter, $anchorScro
             return;
         }
 
-        if (b.keyCode == 13 || b.keyCode == 38 || b.keyCode == 40) {
+        if (b.keyCode == 13 || b.keyCode == 40) {
 
             if ($scope.seiProcess.ZAICD == "") {
                 document.querySelector("#seisu" + $scope.seiProcess.SIYNO + "ID").select().focus();
@@ -2517,7 +2735,6 @@ jyuucyu.controller("seisancontroller", function ($location, $filter, $anchorScro
     $scope.wait_hide = true;
 });
 
-
 jyuucyu.config(["datepickerConfig", "datepickerPopupConfig", "timepickerConfig",
             function (datepickerConfig, datepickerPopupConfig, timepickerConfig) {
                 datepickerConfig.showWeeks = false; // 週番号（日本では馴染みが薄い）を非表示にする
@@ -2590,3 +2807,33 @@ jyuucyu.controller('changeLang', ['$scope', '$translate', '$http',
     }
 ]);
 
+
+jyuucyu.directive('jqdatepicker', function () {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function (scope, element, attrs, ngModelCtrl) {
+            element.datepicker({
+                dateFormat: 'DD, d  MM, yy',
+                onSelect: function (date) {
+                    scope.date = date;
+                    scope.$apply();
+                }
+            });
+        }
+    };
+});
+jyuucyu.controller('MyController', ['$scope', function ($scope) {
+    $scope.current = new Date();
+    // （5）変数currentの値を監視
+    $scope.$watch('current', function (new_value, old_value) {
+        if (!angular.isDate(new_value)) {
+            $scope.current = new Date();
+        }
+    });
+
+    $scope.onopen = function ($event) {
+        // （4）カレンダーを開く
+        $scope.opened = true;
+    };
+}]);

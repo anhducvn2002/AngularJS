@@ -5,7 +5,6 @@
   //  ViewBag.Title = "Home Page";
 }
 
-
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header" style="width: 100%">
         <header class="mdl-layout__header">
             <div class="mdl-layout__header-row">
@@ -14,7 +13,7 @@
                     {{FacName}}
                 </span>
 
-                <div style="text-align:right;position:sticky;left:800;width:900px">
+                <div style="text-align:right;width: -webkit-fill-available; margin-right: 100px;">
                     <span ng-controller="changeLang"><img src="~/Content/Flag/japan-flag-icon-32.png" ng-click="switchLanguage('jp')" />&nbsp</span>
                     <span ng-controller="changeLang"><img src="~/Content/Flag/united-states-of-america-flag-icon-32.png" ng-click="switchLanguage('en')" />&nbsp</span>
                     <span ng-controller="changeLang"><img src="~/Content/Flag/vietnam-flag-icon-32.png" ng-click="switchLanguage('vn')" />&nbsp</span>
@@ -26,7 +25,7 @@
             <div class="mdl-layout__tab-bar mdl-js-ripple-effect" >
                 <a href="#scroll-tab-2" class="mdl-layout__tab is-active"><span translate>orderL</span></a>
                 <a href="#scroll-tab-3" class="mdl-layout__tab"><span translate>scheduleProdL</span></a>
-                <a href="#scroll-tab-4" class="mdl-layout__tab"><span translate>TEST</span></a>
+                <a href="#scroll-tab-4" class="mdl-layout__tab" hidden><span translate>TEST</span></a>
 
 
                 <!--<a href="#scroll-tab-5" class="mdl-layout__tab">Tab 5</a>
@@ -41,47 +40,45 @@
                         <p></p>
                         <div ng-controller="jyucyucontroller">
                             <div id="jyuReg">
-                                <table width="823" border="0">
+                                <table border="0">
                                     <tr>
-                                        <td width="69" ><span translate>cusL</span></td>
+                                        <td width="69px" ><span translate>cusL</span></td>
                                         
-                                        <td>
-                                            <div style="width:3pc" class="mdl-textfield mdl-js-textfield">
-                                                <span>
-                                                    <input style="width:15pc" class="mdl-textfield__input" type="text"
+                                        <td width="250px">
+                                            <div class="mdl-textfield mdl-js-textfield">
+                                                <div style="width:200px">
+                                                    <input style="width:230px" class="mdl-textfield__input" type="text"
                                                            ng-keyup="searchTokui(tokuiN, $event)" ng-change="searchTokuiChange(tokuiN)"
                                                            ng-blur="leaveInput('TOKCD',$event)"
-                                                           ng-model="tokuiN" value={{tokuiN}} id="tokuiNID" autofocus />
-                                                    <!--<label class="mdl-textfield__label" for="quantityID">得意名称</label>-->
-                                                </span>
-                                                <select style="position:absolute;background-color:palegreen" size="13" ng-model="selectedTokui"
-                                                        ng-blur="listBlur('TOKCD')"
-                                                        ng-keyup="listKeyUp('TOKCD',$event)" ng-hide="tokuiHide" id="selectListTokuiID">
-                                                    <option ng-repeat="tokuiData in listTokui" value="{{tokuiData}}">
-                                                        {{tokuiData}}
-                                                    </option>
-                                                </select>
+                                                           ng-model="tokuiN" value={{tokuiN}} id="tokuiNID" autofocus autocomplete="off" />
+                                                    <label class="mdl-textfield__label" for="tokuiNID"></label>
+                                                </div>
+                                                    <select style="position:absolute;background-color:palegreen" size="13" ng-model="selectedTokui"
+                                                            ng-blur="listBlur('TOKCD')"
+                                                            ng-keyup="listKeyUp('TOKCD',$event)" ng-hide="tokuiHide" id="selectListTokuiID">
+                                                        <option ng-repeat="tokuiData in listTokui" value="{{tokuiData}}">
+                                                            {{tokuiData}}
+                                                        </option>
+                                                    </select>
                                             </div>
                                         </td>
                                         <td  colspan="3">
-                                            <!--<span style="width:15pc" class="mdl-textfield mdl-js-textfield">
-                                                    
-                                                </span>                            -->
-                                            <input style="width:15pc" class="mdl-textfield__input" type="text" 
-                                                   ng-blur="leaveInput('TOKCD',$event)" ng-model="tokuiC" ng-keyup="searchTokui(tokuiC, $event)" 
-                                                   ng-change="searchTokuiChange(tokuiC)" value={{tokuiC}} id="tokuiC" disabled />
+                                            <input style="width:60px" class="mdl-textfield__input" type="text" 
+                                                   ng-model="tokuiC" value={{tokuiC}} id="tokuiC" disabled />
+                                                
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><span translate>deliveryLocL</span></td>
+                                        <td><div style="width:70px" translate>deliveryLocL</div></td>
                                         <td>
-                                            <div style="width:3pc" class="mdl-textfield mdl-js-textfield">
+                                            <div class="mdl-textfield mdl-js-textfield">
                                                 <span>
-                                                    <input style="width:15pc" class="mdl-textfield__input" type="text"
+                                                    <input style="width:230px" class="mdl-textfield__input" type="text"
                                                            ng-keyup="searchNounyu(nounyuN, $event)" ng-change="searchNoynyuChange(nounyuN)"
-                                                           ng-blur="leaveInput('NOUCD',$event)"
-                                                           ng-model="nounyuN" ng-style="nounyuStyle" value={{nounyuN}} id="nounyuNID" ng-disabled="tokuiN.length == 0" />
-                                                    <!--<label class="mdl-textfield__label" for="quantityID">得意名称</label>-->
+                                                           ng-blur="leaveInput('NOUCD',$event)" ng-focus="searchNoynyuChange(nounyuN)"
+                                                           ng-model="nounyuN" ng-style="nounyuStyle" value={{nounyuN}} id="nounyuNID" 
+                                                           ng-disabled="tokuiN.length == 0 || nounyuN == '納入場所は存在しません。'"  autocomplete="off"/>
+                                                    <label class="mdl-textfield__label" for="nounyuNID"></label>
                                                 </span>
                                                 <select style="position:absolute;background-color:palegreen" size="4" ng-model="selectedNounyu"
                                                         ng-blur="listBlur('NOUCD')"
@@ -93,26 +90,24 @@
                                             </div>
                                         </td>
                                         <td colspan="3">
-                                            <input style="width:15pc" type="text"
-                                                   ng-keyup="searchNounyu(nounyuC, $event)" ng-change="searchNoynyuChange(nounyuC)"
-                                                   ng-blur="leaveInput('NOUCD',$event)"
+                                            <!--<input style="width:60px" type="text"                                                   
                                                    ng-model="nounyuC" value={{nouNyuC}} id="nounyuCID" disabled/>
-                                            <!--<label class="mdl-textfield__label" for="quantityID">得意名称</label>-->
+                                            <label class="mdl-textfield__label" for="quantityID">得意名称</label>-->
                                         
                                         </td>
                                     </tr>
                                     <tr>
                                         <td ><span translate>productL</span></td>
                                         <td>
-                                            <div style="width:3pc" class="mdl-textfield mdl-js-textfield">
+                                            <div class="mdl-textfield mdl-js-textfield">
                                                 <span>
-                                                    <input style="width:15pc" class="mdl-textfield__input" type="text"
+                                                    <input width="180px" style="width:180px" class="mdl-textfield__input" type="text"
                                                            ng-keyup="searchSehin(sehinZ, $event)" ng-change="searchSehinChange(sehinZ)"
-                                                           ng-blur="leaveInput('ZAICD',$event)"
-                                                           ng-model="sehinZ" ng-style="nounyuStyle" value={{sehinZ}} id="sehinZID" />
-                                                    <!--<label class="mdl-textfield__label" for="quantityID">得意名称</label>-->
+                                                           ng-blur="leaveInput('ZAICD',$event)" ng-style="nounyuStyle" 
+                                                           ng-model="sehinZ" value={{sehinZ}} id="sehinZID"  autocomplete="off"/>
+                                                   <label class="mdl-textfield__label" for="sehinZID"></label>
                                                 </span>
-                                                <select style="position:absolute;background-color:palegreen" size="15" ng-model="selectedSeihin"
+                                                <select style="position:absolute;background-color:palegreen" size="20" ng-model="selectedSeihin"
                                                         ng-blur="listBlur('ZAICD')"
                                                         ng-keyup="listKeyUp('ZAICD',$event)" ng-hide="sehinHide" id="selectListSeihinID">
                                                     <option ng-repeat="sehindata in listSehin" value="{{sehindata}}">
@@ -120,78 +115,83 @@
                                                     </option>
                                                 </select>
                                             </div>
-                                            <!--
-                                            <input style="width:10pc" class="mdl-textfield__input ng-pristine ng-valid" type="text"
-                                                   
-                                                   
-                                                   ng-model="sehinZ" value="図番番号">
-                                                <select style="position:absolute;background-color:antiquewhite;" size="13" 
-                                                        ng-model="selectedSehin" ng-hide="sehinHide" ng-keyup="TESTBYDUC($event,'ZAICD')">
-                                                    <option style="width:500px" ng-repeat="sehindata in listSehin" value="{{sehindata}}">
-                                                        {{sehindata}}
-                                                    </option>
-                                                </select>                                            
-                                                -->
                                         </td>
-                                        <!--<td><input type="text" value={{seiHinCode}} /></td>-->
                                         
                                         <td width="160">
-                                            <span><input style="width:10pc" class="mdl-textfield__input ng-pristine ng-valid" type="text" ng-model="sehinN" ng-style="sehinNStyle" value="製品名称" disabled=""></span>
+                                            <span><input style="width:140px" class="mdl-textfield__input ng-pristine ng-valid" type="text" ng-model="sehinN" ng-style="sehinNStyle" value="製品名称" disabled=""></span>
                                         </td>
                                         <td width="160">
-                                            <input style="width:10pc" class="mdl-textfield__input ng-pristine ng-valid" type="text" ng-model="sehinK" ng-style="sehinKStyle" value="機種" disabled="">
+                                            <input style="width:140px" class="mdl-textfield__input ng-pristine ng-valid" type="text" ng-model="sehinK" ng-style="sehinKStyle" value="機種" disabled="">
                                         </td>
-                                        <td width="172">
-                                            <input type="text" ng-blur="leaveInput('ZAICD',$event)" id="sehinCID" ng-model="sehinC"
+                                        <td width="70">
+                                            <!--<input style="width:60px" type="text" ng-blur="leaveInput('ZAICD',$event)" id="sehinCID" ng-model="sehinC"
                                                    ng-keyup="searchSehin(sehinC)" ng-change="searchSehinChange(sehinC)" ng-style="sehinCStyle" 
-                                                   value={{sehinC}} disabled/><br />
+                                                   value={{sehinC}} disabled/><br />-->
                                         </td>
                                     </tr>
                                 </table>
                             </div>
 
-                            <table>
+                            <table border="0">
                                 <tr>
-                                    <td>
-                                        <table>
+                                    <td width="200px">
+                                        <table border="0">
                                             <tr>
-                                                <td><span translate>quantityL</span></td>
-                                                <td><div style="width:3pc" class="mdl-textfield mdl-js-textfield">
+                                                <td width="100px"><div style="width:90px" translate>quantityL</div></td>
+                                                <td width="100px">
+                                                    <div style="width:100px" class="mdl-textfield mdl-js-textfield">
                                                         <span>
-                                                            <input style="width:3pc;text-align:right" class="mdl-textfield__input" type="text" 
+                                                            <input style="text-align:right" class="mdl-textfield__input" type="text" 
                                                                    ng-keyup="enterkey($event, 'sehinTID')" ng-model="quantity" value={{quantity}} 
                                                                    pattern="-?[0-9]*(\.[0-9]+)?" id="quantityID" />
-                                                            <!--<label class="mdl-textfield__label" for="quantityID">QTY</label>-->
+                                                            <label class="mdl-textfield__label" for="quantityID"></label>
                                                         </span>
-                                                        <span style="width:10pc" class="mdl-textfield__error">not number!</span>
+                                                        <span style="width:100px" class="mdl-textfield__error">not number!</span>
                                                     </div>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td><span translate>unitL</span></td>
-                                                <td><input type="text" style="text-align:right" id="sehinTID" ng-keyup="enterkey($event, 'dateNoukiID')" ng-model="sehinT" ng-style="sehinTStyle" value={{sehinT}} /></td>
+                                                <td width="100px"><span translate>unitL</span></td>
+                                                <td>
+                                                    <div style="width:100px">
+                                                        <span class="mdl-textfield mdl-js-textfield">
+                                                            <input type="text" style="text-align:right;width:100px" class="mdl-textfield__input" id="sehinTID"
+                                                                   ng-keyup="enterkey($event, 'dateNoukiID')" ng-model="sehinT"
+                                                                   ng-style="sehinTStyle" value={{sehinT}} />
+                                                        </span>
+                                                    </div>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td><span translate>金額</span></td>
-                                                <td style="text-align:right">{{sehinT*quantity}}</td>
+                                                <td style="text-align:right;"><div style="width:100px">{{sehinT*quantity}}</div></td>
                                             </tr>
                                             <tr>
                                                 <td><span translate>orderDateL</span></td>
                                                 <td>
-                                                    <input type="text" id="dateNoukiID" ng-keyup=changedateNouki($event) ng-model="dateNouki" ng-required="true" ng-style="noukiDateStyle" /></td>
+                                                    <div style="width:100px">
+                                                        <input style="width:100px" type="text" id="dateNoukiID" ng-keyup=changedateNouki($event) ng-model="dateNouki" ng-required="true" ng-style="noukiDateStyle" />
+                                                    </div>
+                                                </td>
+                                                    
                                             </tr>
                                             <tr>
                                                 <td><span translate>deliveryDateL</span></td>
-                                                <td><input type="text" id="dateNounyuID" ng-keyup=changedateNounyu($event) ng-model="dateNounyu" ng-required="true" ng-style="nounyuDateStyle" /></td>
+                                                <td>
+                                                    <div style="width:100px">
+                                                        <input style="width:100px" type="text" id="dateNounyuID" ng-keyup=changedateNounyu($event) ng-model="dateNounyu" ng-required="true" ng-style="nounyuDateStyle" />
+
+                                                    </div>
+                                                </td>
                                             </tr>
                                         </table>
                                     </td>
-                                    <td width="100px"></td>
+                                    <td width="150px"></td>
                                     <td>
-                                        <table>
+                                        <table border="0">
                                             <tr>
                                                 <td width="100px"><span translate>departmentL</span></td>
-                                                <td><input type="text" id="bumonCodeID" ng-keyup="enterkey($event, 'tantouCID')" value={{bumonCode}} /></td>
+                                                <td><input style="width:50px" type="text" id="bumonCodeID" ng-keyup="enterkey($event, 'tantouCID')" value={{bumonCode}} /></td>
                                                 <td><input type="text" style="width:10pc" class="mdl-textfield__input" value={{bumonName}} disabled /></td>
                                             </tr>
                                             <tr>
@@ -200,7 +200,7 @@
 
                                                     <div style="width:3pc" class="mdl-textfield mdl-js-textfield">
                                                         <span>
-                                                            <input style="width:15pc" class="mdl-textfield__input" type="text"
+                                                            <input style="width:50px" class="mdl-textfield__input" type="text"
                                                                    ng-keyup="searchTantou(tantouC, $event)" ng-change="searchTantouChange(tantouC)"
                                                                    ng-blur="leaveInput('TANCD',$event)"
                                                                    ng-model="tantouC" ng-style="nounyuStyle" value={{tantouC}} id="tantouCID" />
@@ -224,22 +224,22 @@
                                                 </td>
 
                                                 <!--<td><input type="text" value={{tantouCode}} /></td>-->
-                                                <td><input type="text" style="width:10pc" class="mdl-textfield__input" ng-model="tantouN" value={{tantouN}} disabled /></td>
+                                                <td><input type="text" class="mdl-textfield__input" ng-model="tantouN" value={{tantouN}} disabled /></td>
                                             </tr>
                                             <tr>
                                                 <td><span translate>customerOrderL</span></td>
                                                 <td colspan="2">
-                                                    <input width="300" type="text" id="cyumonNo1ID" ng-keyup="enterkey($event, 'cyumonNo2ID')" ng-model="cyumonNo1" value={{cyumonNo1}} />
-                                                    - <input type="text" id="cyumonNo2ID" ng-keyup="enterkey($event, 'seizouID')" ng-model="cyumonNo2" value={{cyumonNo2}} />
+                                                    <input style="width:110px" type="text" id="cyumonNo1ID" ng-keyup="enterkey($event, 'cyumonNo2ID')" ng-model="cyumonNo1" value={{cyumonNo1}} />
+                                                    - <input style="width:30px" type="text" id="cyumonNo2ID" ng-keyup="enterkey($event, 'seizouID')" ng-model="cyumonNo2" value={{cyumonNo2}} />
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td><span translate>productionNoL</span></td>
-                                                <td colspan="2"><input id="seizouID" type="text" ng-keyup="enterkey($event, 'bikouID')" value={{seizou}} /></td>
+                                                <td colspan="2"><input id="seizouID" type="text" style="width:110px" ng-keyup="enterkey($event, 'bikouID')" value={{seizou}} /></td>
                                             </tr>
                                             <tr>
                                                 <td><span translate>remarksL</span></td>
-                                                <td colspan="2"><input type="text" id="bikouID" ng-keyup="enterkey($event, 'regLID')" value={{bikou}} /></td>
+                                                <td colspan="2"><input type="text" id="bikouID" style="width:110px" ng-keyup="enterkey($event, 'regLID')" value={{bikou}} /></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -307,74 +307,62 @@
                             <div ng-model="processHide" ng-hide="processHide">
                                 <p></p>
 
-                                <!--SEARCH-->                                
-                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
+                                <!--SEARCH     
+                                                          
+                                <div class="mdl-textfield-search mdl-js-textfield mdl-textfield-search--expandable">
                                     <label class="mdl-button mdl-js-button mdl-button--icon" for="sample6">
                                         <i class="material-icons">search</i>
                                     </label> 
                                     
 
-                                    <div class="mdl-textfield__expandable-holder">
-                                        <input class="mdl-textfield__input" type="text" id="sample6" ng-model="searchValue" value={{searchValue}} ng-text-change={{searchInput()}}>
-                                        <label class="mdl-textfield__label" for="sample-expandable">search</label>
+                                    <div class="mdl-textfield-search__expandable-holder">
+                                        <input class="mdl-textfield-search__input" type="text" id="sample6" ng-model="searchValue" value={{searchValue}} ng-text-change={{searchInput()}}>
+                                        <label class="mdl-textfield-search__label" for="sample-expandable">search</label>
                                     </div>
                                 </div>
-                                <div id="panel" *ngIf="isNotEmptyObject()">
-                                    FILTERED ROWS: {{ (listJyuProcess | filter: searchValue).length }}
-                                </div>
+                                    -->
+                                
+                                
+                                
 
                                 <h3>PROCESSING ORDERS</h3>
-
-                                <style type="text/css">
-                                    /*table */
-                                    table {
-                                        border-collapse: collapse;
-                                    }
-
-                                        table th, table td {
-                                            padding: 3px;
-                                        }
-
-                                            table th:hover {
-                                                cursor: pointer;
-                                            }
-
-                                    .arrow-down:after, .arrow-up:after {
-                                        content: ' ';
-                                        position: relative;
-                                        left: 2px;
-                                        border: 8px solid transparent;
-                                    }
-
-                                    .arrow-down:after {
-                                        top: 10px;
-                                        border-top-color: black;
-                                    }
-
-                                    .arrow-up:after {
-                                        bottom: 15px;
-                                        border-bottom-color: black;
-                                    }
-
-                                    .arrow-down, .arrow-up {
-                                        padding-right: 10px;
-                                    }
-
+                                <!-- -->
+                                <style type="text/css">  
+                                    
                                     thead th {
                                         background-color: darkgrey;
                                         position: fixed;
                                         top: 0;
                                     }
                                 </style>
-
-
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <i class="material-icons">search</i>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <input style="width:230px" class="mdl-textfield__input" type="text"
+                                                       ng-model="searchValue" value={{searchValue}} id="searchValueID" />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <div id="panel" ng-hide="searchValue==''">
+                                                FILTERED ROWS: {{ (listJyuProcess | filter: searchValue).length }}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                
                                 <div style="text-align:right">
-                                    ALL ROWS: {{listJyuProcess.length}} , Selected: {{ (listJyuProcess | filter: {selected: true}).length }}
+                                    <a ng-click="searchValue = ''" > ALL ROWS:</a> {{listJyuProcess.length}} , <a ng-click="searchValue = true">  Selected:</a> {{ (listJyuProcess | filter: {selected: true}).length }}
                                 </div>
 
                                 <div style="height:400px;position:relative; overflow:scroll">
-                                    <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" align="left" style="text-align:left;overflow:scroll;height:400px;">
-                                        <thead style="position:sticky; top:30px">
+                                    <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+                                        <thead >
                                             <tr>
                                                 <th>
                                                     <input type="checkbox" ng-model="selectedAll" value={{selectedAll}} ng-click="selectedALLJYUCYU()" />
@@ -482,38 +470,39 @@
                             <div id="seiReg">
                                 <table>
                                     <tr>
-                                        <td><span translate>cusL</span></td>
+                                        <td width="90px"><span translate>cusL</span></td>
                                         <td>
-                                            <span style="width:15pc" class="mdl-textfield mdl-js-textfield">
-                                                <input style="width:15pc" class="mdl-textfield__input" type="text" ng-model="tokuiC" ng-keyup="searchTokui(tokuiC)" value={{tokuiC}} id="tokuiC" autofocus />
-                                                <label class="mdl-textfield__label" for="tokuiC">TokuiCode</label>
-                                            </span>
-
-                                            <div style="position: absolute;
-                                          width: 500px;
-                                          height: 200px;
-                                          z-index: 15;
-                                          top: 30%;
-                                          left: 40%;
-                                          margin: -100px 0 0 -150px;"
-                                                 ng-model="tokuiHide" ng-hide="tokuiHide">
-                                                <ul style="position:absolute;margin:-100px 0 0 -150px" class="list-group" ng-model="tokuiHide" ng-hide="tokuiHide">
-                                                    <li class="list-group-item" ng-repeat="tokuiData in listTokui" ng-click="getTokui(tokuiData)">{{tokuiData}}</li>
-                                                </ul>
+                                            <div class="mdl-textfield mdl-js-textfield">
+                                                
+                                                    <input style="width:230px" class="mdl-textfield__input" type="text"
+                                                           ng-keyup="searchTokui(tokuiN, $event)" ng-change="searchTokuiChange(tokuiN)"
+                                                           ng-blur="leaveInput('TOKCD',$event)"
+                                                           ng-model="tokuiN" value={{tokuiN}} id="tokuiNIDS" autofocus autocomplete="off" />
+                                                    <label class="mdl-textfield__label" for="quantityID"></label>
+                                                
+                                                <select style="position:absolute;background-color:palegreen" size="8" ng-model="selectedTokuiS"
+                                                        ng-blur="listBlur('TOKCD')"
+                                                        ng-keyup="listKeyUpS('TOKCD',$event)" ng-hide="tokuiHide" id="selectListTokuiIDS">
+                                                    <option ng-repeat="tokuiData in listTokui" value="{{tokuiData}}">
+                                                        {{tokuiData}}
+                                                    </option>
+                                                </select>
                                             </div>
 
                                         </td>
                                         <td colspan="2">
-                                            <span style="width:15pc" class="mdl-textfield mdl-js-textfield">
-                                                <input style="width:15pc" class="mdl-textfield__input" type="text" ng-model="tokuiN" value={{tokuiN}} id="tokuiN" readonly="readonly" />
-                                                <label class="mdl-textfield__label" for="tokuiN"></label>
-                                            </span>
+                                            <!--<span style="width:15pc" class="mdl-textfield mdl-js-textfield">
+                                                <input style="width:15pc" class="mdl-textfield__input" type="text" 
+                                                       ng-model="tokuiC" ng-keyup="searchTokui(tokuiC)" value={{tokuiC}} id="tokuiC" disabled/>
+                                                <label class="mdl-textfield__label" for="tokuiC">TokuiCode</label>
+                                            </span>                                            
+                                            -->
                                         </td>
                                     </tr>
                                     <tr>
                                         <td><span translate>区分</span></td>
                                         <td>
-                                            <select ng-change="kubunSelect(kubun)" ng-model="kubun" ng-options="c.name for c in kubuns"></select>                                            
+                                            <select ng-change="kubunSelect(kubun)" ng-model="kubun" ng-options="c.name for c in kubuns" id="selectKubunID"></select>                                            
                                         </td>
                                         <td></td>
                                     </tr>
@@ -556,7 +545,7 @@
                             <!-- Processing Data -->
                             <div ng-model="processHide">
                                 <!--ng-hide="processHide">-->
-                                <!--SEARCH-->
+                                <!--SEARCH
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
                                     <label class="mdl-button mdl-js-button mdl-button--icon" for="sample7">
                                         <i class="material-icons">search</i>
@@ -570,6 +559,8 @@
                                 <div id="panel" *ngIf="isNotEmptyObject()">
                                     FILTERED ROWS: {{ (listSeiProcess | filter: searchValue).length }}
                                 </div>
+                                -->
+
                                 <h3>PROCESSING ORDERS</h3>
                                 <!--
                                 <div style="position: absolute;
@@ -590,10 +581,32 @@
                                     </ul>
 
 
-                                </div>-->
+                                </div>-->    
+
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <i class="material-icons">search</i>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <input style="width:230px" class="mdl-textfield__input" type="text"
+                                                       ng-model="searchValue" value={{searchValue}} id="searchValueID" />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <div id="panel" ng-hide="searchValue==''">
+                                                FILTERED ROWS: {{ (listSeiProcess | filter: searchValue).length }}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            
                                 <div style="text-align:right">
-                                    ALL ROWS: {{(listSeiProcess | filter: {ZAIKB: kubun.code, TOKCD: tokuiC}).length}} , Selected: {{ (listSeiProcess | filter: {selected: true}).length }}
-                                </div>
+                                    <a ng-click="searchValue = ''">ALL ROWS:</a> {{(listSeiProcess | filter: {ZAIKB: kubun.code, TOKCD: tokuiC}).length}} , <a ng-click="searchValue = true; kubun = null">Selected:</a> {{ (listSeiProcess | filter: {selected: true}).length }}
+</div>
                                 <div style="height:400px;position:relative; overflow:scroll">                                    
                                     <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" align="left" style="text-align:left">
                                         <thead style="position:sticky; top:30px">
@@ -604,6 +617,7 @@
 
                                                 <th ng-click='sortColumn("Status")' ng-class='sortClass("Status")'>Status</th>
                                                 <th ng-click='sortColumn("SIYNO")' ng-class='sortClass("SIYNO")'>SIYNO</th>
+                                                <th ng-click='sortColumn("TOKCD")' ng-class='sortClass("TOKCD")'>TOKCD</th>
                                                 <th ng-click='sortColumn("ZAIKB")' ng-class='sortClass("ZAIKB")'>ZAIKB</th>
                                                 <th ng-click='sortColumn("ZAICD")' ng-class='sortClass("ZAICD")'>ZAICD</th>
                                                 <th ng-click='sortColumn("ZUBAN")' ng-class='sortClass("ZUBAN")'>
@@ -650,6 +664,7 @@
 
                                                 <td>{{seiProcess.Status}}</td>
                                                 <td>{{seiProcess.SIYNO}}</td>
+                                                <td>{{seiProcess.TOKCD}}</td>
                                                 <td>{{seiProcess.ZAIKB}}</td>
                                                 <td>
                                                     <input type="text" id="sehin{{seiProcess.SIYNO}}ID"
@@ -698,7 +713,9 @@
 
                                             <!--<div ng-model="createButtonHide"> -->
 
-                                            <button class="mdl-button mdl-js-button mdl-button--raised" ng-click="createSeiProcess()" ng-model="createButtonHide" ng-hide="createButtonHide">
+                                            <button class="mdl-button mdl-js-button mdl-button--raised" 
+                                                    ng-click="createSeiProcess()" ng-model="createButtonHide" 
+                                                    ng-hide="tokuiC == ''"> <!-- "createButtonHide">-->
                                                 <span translate>newButton</span>
                                             </button>
 
@@ -727,6 +744,8 @@
                     <input type="text" value="abc" />
 
 
+                    <input type="text" datepicker-popup ng-model="dateNouki" ng-required="true" />
+                    <p></p>
 
 
                     <div ng-controller="jyucyucontroller">
@@ -739,7 +758,7 @@
                         </ul>
 
                         <input type="text" ng-model="tokuiC" ng-keyup="searchTokui(tokuiC, $event)" value={{tokuiC}} size="20" list="mylis2" />
-                        
+
                         <datalist id="mylis2">
                             <option ng-repeat="tokuiData in listTokui" value="{{tokuiData}}">{{tokuiData}}</option>
                         </datalist>　<br />
@@ -748,13 +767,13 @@
                         <button class="mdl-button mdl-js-button mdl-button--raised" ng-click="TESTBYDUC()">
                             <span translate>TESTBYDUC</span>
                         </button>
-                        
+
                         <span><select ng-model="odbc" ng-options="c.name for c in odbcs"></select></span>
-                        
+
                         <div>
                             <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" align="left" style="text-align:left">
                                 <thead style="position:sticky; top:30px">
-                                    <tr>                                        
+                                    <tr>
                                         <th>CYUNO</th>
 
                                         <th>CYUDT</th>
@@ -777,7 +796,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-repeat="cyumon in abcTest | filter:searchValue | orderBy:column:reverse">                                        
+                                    <tr ng-repeat="cyumon in abcTest | filter:searchValue | orderBy:column:reverse">
                                         <td>{{cyumon.Cyuno}}</td>
 
                                         <td>{{cyumon.Cyudt}}</td>
@@ -802,9 +821,8 @@
                         </div>
 
                     </div>
-
-                </div>
-            </section>
+                    <br />
+                </section>
 
             <!--<section class="mdl-layout__tab-panel" id="scroll-tab-5">
                 <div class="page-content">

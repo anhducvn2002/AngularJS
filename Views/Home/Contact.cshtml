@@ -17,7 +17,10 @@
     <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
 </address>
 
-<input id="party" type="datetime-local" name="partydate" value="2017-06-01T08:30">
+<input id="party" type="datetime-local" name="partydate" value="2017-06-01">
+<br />
+<input id="sDate" name="programStartDate" type="text" jqdatepicker ng-model="date" />
+{{date}}
 
 
 <style type="text/css">
@@ -30,6 +33,17 @@
     <input type="text" datepicker-popup ng-model="dateNouki" ng-required="true" />
 </div>
 
+<div ng-controller="MyController">
+    <form>
+        <label for="date">日付：</label><br />
+        <!--（3）日付ピッカーを準備 -->
+        <input id="date" type="text" ng-model="current"
+               ng-focus="onopen($event)"
+               uib-datepicker-popup="yyyy-MM-dd" is-open="opened"
+               current-text="今日" clear-text="クリア" close-text="閉じる" />
+    </form>
+
+</div>
     <div ng-app="myApp2" ng-controller="someController">
         <span translate>quantityL</span>
         <button ng-click="switchLanguage('jp')" translate="LANG_DE_DE"></button>
